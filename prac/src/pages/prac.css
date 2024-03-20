@@ -1,0 +1,12 @@
+.option{
+    display: inline-block;
+    font-size: 1.5em;
+    width: 95vw;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 10%;
+    margin:0.5px;
+    padding: 5px 0;
+    word-wrap: break-word;
+    overflow: scroll;
+}
