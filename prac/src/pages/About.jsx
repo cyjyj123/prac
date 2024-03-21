@@ -11,7 +11,7 @@ export default function About(){
             content=(
             <div>
                 <p>Hello，您好，欢迎使用本软件，当前的有些功能还尚未完善，暂且请先不要使用这些功能。</p>
-                <p>当前，较为完善的功能是：打开单文件进行练习，以后将会支持使用打包好的课程练习文件进行练习。</p>
+                <p>版本：v0.0.2</p>
             </div>)
         }else if(submenu=="credits"){
             content=<div><iframe class="aif" src="credits.txt"></iframe></div>

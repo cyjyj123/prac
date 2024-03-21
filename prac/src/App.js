@@ -5,7 +5,7 @@ import "mathjax/es5/tex-svg-full"
 import { useState } from 'react';
 import Home from './pages/Home';
 import Prac from './pages/Prac';
-import { AppBar, BottomNavigation,BottomNavigationAction} from '@material-ui/core';
+import { AppBar, Toolbar,BottomNavigation,BottomNavigationAction, Box} from '@material-ui/core';
 import About from './pages/About';
 import Menu from "./pages/Menu"
 
@@ -26,12 +26,14 @@ function App() {
 
   return (
     <div className="App">
-      <div style={{height:"10vh"}}>
-        <AppBar>
-        <h3>{prac.title!=undefined ? prac.title : `Prac`}</h3>
-      </AppBar>
+      <div>
+        <AppBar position='sticky' style={{height:"8vh"}}>
+          <Toolbar style={{display:"flex",justifyContent:"center"}}>
+            <h5>{prac.title!=undefined ? `练习 - ${prac.title}` : `Prac`}</h5>
+          </Toolbar>
+        </AppBar>
       </div>
-      
+
       <div style={{overflow:"scroll"}}>
         {middle}
         <p>&nbsp;</p>

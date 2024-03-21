@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./prac.css"
-import { Snackbar } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert"
 
 // 标准库，文件中不自带，格式类似，key为以std开头的名字，内容为至少包括type和content的结构
@@ -162,7 +162,7 @@ export default function Prac(props){
     }else if(prac.questions[id].type=="blank"){
         options=(<div>
             <p>（回答区域请不要使用latex，多个空白处请换行）</p>
-            <textarea onChange={(e)=>setBlankUserAns(e.target.value)}></textarea>
+            <textarea onChange={(e)=>setBlankUserAns(e.target.value)} style={{width:"90vw",height:"20vh"}}></textarea>
             <button onClick={()=>{
                 const ans=prac.questions[id].answer; // 标准答案，可能是字符串或者字符串数组
                 //let before_sheet=sheet;
@@ -215,7 +215,7 @@ export default function Prac(props){
     let explain_button=null;
     if(sheet[id]!="Unanswer"){
     explain_button=(<div>
-        <p><button onClick={()=>explainVisible==false ? setExplainVisible(true) : setExplainVisible(false)}>查看解析</button></p>
+        <p><Button variant="contained" style={{width:"95vw"}} onClick={()=>explainVisible==false ? setExplainVisible(true) : setExplainVisible(false)}>查看解析</Button></p>
         {
         explainVisible==true ? <div dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].explain,prac.meta)}}>
         </div> : null
@@ -232,10 +232,12 @@ export default function Prac(props){
                 {options}
             </div>
 
+            {result_feed}
+
             {explain_button}
 
             <p>
-                <button onClick={()=>{
+                <Button style={{backgroundColor:"#fdedec",width:"47vw",marginRight:"0.5vw"}} onClick={()=>{
                     if(id!=0){
                         setExplainVisible(false);
                         
@@ -244,8 +246,8 @@ export default function Prac(props){
 
                         setId(id-1);
                     }
-                }}>上一题</button>
-                <button onClick={()=>{
+                }}>上一题</Button>
+                <Button style={{backgroundColor:"lightskyblue",width:"47vw",marginLeft:"0.5vw"}} onClick={()=>{
                     if(id!=MAX-1){
                         setExplainVisible(false);
 
@@ -254,10 +256,10 @@ export default function Prac(props){
                         
                         setId(id+1);
                     }
-                }}>下一题</button>
+                }}>下一题</Button>
             </p>
 
-                {result_feed}
+                
         </div>
     )
 }

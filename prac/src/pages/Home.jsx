@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "@material-ui/core";
 
 export default function Home(props){
     const prac=props.prac;
@@ -35,10 +36,10 @@ export default function Home(props){
         {basic_info}
         <hr/>
         
-        <p><button onClick={
+        <p><Button variant="contained" style={{backgroundColor:"lightskyblue",width:"95vw"}} onClick={
             ()=>{
                     props.ChangePage("prac")
             }
-        }>开始练习</button></p>
+        }>开始练习</Button></p>
     </div>)
 }
