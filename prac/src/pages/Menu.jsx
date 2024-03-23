@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import JSZip from "jszip"
 import "./menu.css"
+import {Card, CardContent, CardHeader} from "@material-ui/core"
 
 function readAndGoto(file,props){
     const fr=new FileReader();
@@ -47,9 +48,28 @@ export default function Menu(props){
         </div>
     )
     
-    const list=courses.map((v,i)=><p key={i}><button onClick={()=>{
-        if(platform=="web") {setSelCouId(i) }else{setChapters(v.data);}
-    }}>{v.name}</button></p>)
+    //const course_json=chapters.filter(v=>v.name=="course.json");
+    //console.log(course_json)
+    const list=courses.map((v,i)=>{
+        const course_json=v.data.filter(v=>v.name=="course.json");
+        console.log(v.data,course_json)
+
+        const v_real_name_split_idx=v.name.match(/-[^-]*$/);
+        const v_real_name=v.name.substring(0,v_real_name_split_idx.index);
+        const create_time_str=v.name.substring(v_real_name_split_idx.index+1);
+        console.log(create_time_str)
+        const create_time=new Date(parseInt(create_time_str))
+
+        return <Card key={i} variant="outlined"  className="course" onClick={()=>{
+            if(platform=="web") {setSelCouId(i) }else{setChapters(v.data);}
+        }}>
+            <CardContent>
+                <button >{v_real_name}</button>
+                <p>创建时间：{create_time.toLocaleString()}</p>
+                {course_json.length!=0 ? <p>{course_json[0].data.introduction}</p>:null}
+            </CardContent>
+        </Card>
+        })
     
     // 课程章节，虽然不一定分章节
     if(selCouId!=-1){
@@ -124,28 +144,29 @@ export default function Menu(props){
         }}></input></p>
         <hr/>
         <div><h3>{chapters.length==0 ? "课程列表" : "章节或练习列表"}</h3></div>
-        <hr/>
-        <div class="course">
+
+        <div>
             {chapters.length==0 ? list : null}
         </div>
-        <div class="chapter">
+        <div className="chapter">
             {chapters.length!=0 ? <button onClick={()=>setChapters([])}>返回</button> : null}
         </div>
-        <div class="chapter">
-            {chapters.map((v,i)=><p key={i}>
-                <button onClick={async ()=>{
-                if(platform=="web"){
-                    const pracfile=await v.entry.getFile();
-                    readAndGoto(pracfile,props);
-                }else{
-                    if(!v.data instanceof Array){
-                        props.ChangePrac(v.data);
-                        props.ChangePage("home");
-                    }else{
-                        setPracWithChapter(v.data);
-                    }
-                }
-            }}>{v.name}</button></p>)}
+        <div className="chapter">
+            {chapters.map((v,i)=>
+                <p key={i}>
+                    { v.data instanceof Array ? <button onClick={async ()=>setPracWithChapter(v.data)}>{v.name}</button>
+                    :<span style={{display:v.name=="course.json"?"none":"inline"}} onClick={async ()=>{
+                        if(platform=="web"){
+                            const pracfile=await v.entry.getFile();
+                            readAndGoto(pracfile,props);
+                        }else{
+                            props.ChangePrac(v.data);
+                            props.ChangePage("home");
+                        }
+                    }}>{v.name}</span>
+            }  
+            </p>
+        )}
         </div>
 
         <div>

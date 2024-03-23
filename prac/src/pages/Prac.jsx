@@ -26,7 +26,10 @@ function showResult(result,id,sheet,setSheetFunc){
 function parseMeta(str,meta){
     // 替换latex和元数据，str为传入的字符串，包括普通文本、latex和元数据，meta为传入的元数据的结构，其中包括若干个key作为其名
     
-    // 先替换latex
+    // 先替换换行符
+    str=str.replace(/\n/g,"<br/>");
+
+    // 再替换latex
     
     const latexes=str.match(/\$[^\$]+\$/g);
     if(latexes!=null){
@@ -38,7 +41,7 @@ function parseMeta(str,meta){
     })
 }
 
-    // 再替换元数据，之后再说
+    // 最后替换元数据
     const metas=str.match(/#\{.+\}/g);
     if(metas!=null){
     metas.map(m=>{
@@ -56,6 +59,9 @@ function parseMeta(str,meta){
         // 根据其类型进行替换
         if(m_type=="image"){
             str=str.replace(m,`<img src=${m_content} />`);
+        }else{
+            // 其它类型，直接替换
+            str=str.replace(m,m_content)
         }
     })
 }
@@ -79,11 +85,14 @@ export default function Prac(props){
     const [blankUserAns,setBlankUserAns]=useState("");
     const [mchoiceUserAns,setMchoiceUserAns]=useState([]);
 
+    const [optionsSort,setOptionsSort]=useState([]); // 乱序顺序，每个元素为一个数组，代表该题的从第一个选项开始的对应源文件中选项的顺序
+
     let options=null;
     if(prac.questions[id].type=="choice"){
         // 单选
         const ans=prac.questions[id].answer;
-        options=prac.questions[id].options.map((v,i)=>
+
+        const init_options=prac.questions[id].options.map((v,i)=>
             <p><button key={i} className="option" score={i==ans ? 1 : 0} style={{background:sheet[id]=="Correct" && ans==i ? "lightskyblue" : "transparent"}} dangerouslySetInnerHTML={{__html:parseMeta(v,prac.meta)}} onClick={(e)=>{
                 const score=e.target.getAttribute("score");
                 if(score==1){    
@@ -97,8 +106,30 @@ export default function Prac(props){
             }}></button></p>
         )
 
-        if(sheet[id]=="Unanswer"){
-            options.sort((a,b)=>Math.random()-0.5);
+        if(optionsSort[id]==undefined){
+            // 未乱序时乱序
+            console.log("乱序")
+            let afterrand=[]; // 初始为未乱序，最终为乱序后的顺序
+            for(let i=0;i<prac.questions[id].options.length;i++){
+                afterrand.push(i);
+            }
+
+            afterrand.sort((a,b)=>Math.random()-0.5);
+            
+            options=[];
+            for(let i=0;i<afterrand.length;i++){
+                options[i]=init_options[afterrand[i]];
+            }
+
+            optionsSort[id]=afterrand;
+            setOptionsSort([...optionsSort])
+        }else{
+            // 已乱序，则按乱序后的顺序排序
+            console.log("已乱序",optionsSort[id])
+            options=[];
+            for(let i=0;i<optionsSort[id].length;i++){
+                options[i]=init_options[optionsSort[id][i]]
+            }
         }
     }else if(prac.questions[id].type=="mchoice"){
         // 之后再说
@@ -213,7 +244,7 @@ export default function Prac(props){
     }else{}
 
     let explain_button=null;
-    if(sheet[id]!="Unanswer"){
+    if(sheet[id]!="Unanswer" || prac.questions[id].type=="answer" || prac.questions[id].type=="solution"){
     explain_button=(<div>
         <p><Button variant="contained" style={{width:"95vw"}} onClick={()=>explainVisible==false ? setExplainVisible(true) : setExplainVisible(false)}>查看解析</Button></p>
         {

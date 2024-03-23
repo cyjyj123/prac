@@ -28,8 +28,16 @@
             "type":"blank",
             "answer":["-1","1"],
             "explain":"众所周知。"
+        },{
+            "question":"换行\n测试$x_2$<table><tr><td>1</td></tr></table>",
+            "type":"solution",
+            "explain":"#{lt}"
         }
     ],
     "meta":{
+        "lt":{
+            "type":"text",
+            "content":"长文本"
+        }
     }
 }

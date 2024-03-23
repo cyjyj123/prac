@@ -23,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "debug": "npm run build & cap sync & cap run android"
+    "debug": "npm run build & cap sync & cap run android",
+    "bar":"npm run build & cap sync & cap build android"
   },
   "eslintConfig": {
     "extends": [

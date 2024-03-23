@@ -20,7 +20,7 @@
 ## 每个问题的格式
 `question` 问题内容，可以使用latex和引用元数据
 
-`type` 类型：`choice` 单选 `mchoice` 多选 `blank` 填空（主观填空应该归类到简答中） `anwser` 简答 `solution` 解答
+`type` 类型：`choice` 单选 `mchoice` 多选 `blank` 填空（主观填空应该归类到简答中） `answer` 简答 `solution` 解答
 
 `options` 选项 Only for choice and mchoice
 数组，每个元素均为字符串,可以使用latex和引用元数据
