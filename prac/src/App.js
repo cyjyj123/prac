@@ -8,6 +8,7 @@ import Prac from './pages/Prac';
 import { AppBar, Toolbar,BottomNavigation,BottomNavigationAction, Box} from '@material-ui/core';
 import About from './pages/About';
 import Menu from "./pages/Menu"
+import Knows from './pages/Knows';
 
 function App() {
   const [page,setPage]=useState("home");
@@ -22,6 +23,8 @@ function App() {
     middle=<Menu ChangePage={(page_name)=>{setPage(page_name)}} ChangePrac={v=>setPrac(v)} />
   }else if(page=="about"){
     middle=<About />
+  }else if(page=="knows"){
+    middle=<Knows prac={prac} />
   }else{}
 
   return (
@@ -36,6 +39,8 @@ function App() {
 
       <div style={{overflow:"scroll"}}>
         {middle}
+        {prac.knows!=undefined && prac.knows.length!=0 && page=="home" ? <p style={{color:"blue"}} onClick={()=>setPage("knows")}>查看知识点</p> : null}
+        {page=="knows" ? <p style={{color:"blue"}} onClick={()=>setPage("home")}>返回首页</p> :null}
         <p>&nbsp;</p>
         <p>&nbsp;</p>
       </div>

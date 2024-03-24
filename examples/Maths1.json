@@ -39,5 +39,12 @@
             "type":"text",
             "content":"长文本"
         }
-    }
+    },
+    "knows":[
+        {
+            "title":"导数的概念和定义",
+            "content":["&nbsp;&nbsp;导数代表着变化率，对于一个一元函数而言，在它的定义域中，每个点处的导数可能不同，将其所有点处的导数用函数的形式表示出来，叫做导函数，简称“导数”。",
+            "&nbsp;&nbsp;导数的定义$f'(x)=\\lim_{\\Delta x \\to 0} \\frac{f(x+\\Delta x)-f(x)}{\\Delta x}$","&nbsp;&nbsp;标准库图标#{std/icon}"]
+        }
+    ]
 }
