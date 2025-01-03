@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import JSZip from "jszip"
 import "./menu.css"
-import {Card, CardContent, CardHeader} from "@material-ui/core"
+import {Button, Card, CardContent, CardHeader} from "@material-ui/core"
 
 function readAndGoto(file,props){
     const fr=new FileReader();
@@ -65,7 +65,7 @@ export default function Menu(props){
         }}>
             <CardContent>
                 <button >{v_real_name}</button>
-                <p>创建时间：{create_time.toLocaleString()}</p>
+                <p>添加时间：{create_time.toLocaleString()}</p>
                 {course_json.length!=0 ? <p>{course_json[0].data.introduction}</p>:null}
             </CardContent>
         </Card>
@@ -91,10 +91,16 @@ export default function Menu(props){
         })()
     }
 
+    const fileChooseRef=useRef(null);
+
     return (<div>
         {platform=="web" ? storage_menu : null}
-        <p>当前的存储目录为{menu!=null ? menu.name : "localStorage"}</p>
-        <p><input type="file" onChange={async (e)=>{
+        <p style={{color:"grey"}}>当前的存储目录为{menu!=null ? menu.name : "localStorage"}</p>
+        <p style={{color:"red"}}>进行单个练习，请从下面的文件选择框中选择一个JSON文件，如果选择ZIP文件，将会加载并存储课程到下面的列表中。</p>
+        <Button style={{backgroundColor:"lightskyblue",color:"white",fontSize:"32px",width:"80vw"}} onClick={()=>{
+            fileChooseRef.current.click();
+        }}>选择文件</Button>
+        <p><input style={{display:"none"}} ref={fileChooseRef} type="file" onChange={async (e)=>{
             const file=e.target.files[0];
             if(file.name.endsWith(".json")){
                 // 单练习文件直接加载
@@ -142,19 +148,19 @@ export default function Menu(props){
                 alert("暂不支持该文件！")
             }
         }}></input></p>
-        <hr/>
+        <hr style={{margin:"25px 0"}}/>
         <div><h3>{chapters.length==0 ? "课程列表" : "章节或练习列表"}</h3></div>
 
         <div>
             {chapters.length==0 ? list : null}
         </div>
         <div className="chapter">
-            {chapters.length!=0 ? <button onClick={()=>setChapters([])}>返回</button> : null}
+            {chapters.length!=0 ? <Button variant="outlined" onClick={()=>setChapters([])}>返回</Button> : null}
         </div>
         <div className="chapter">
             {chapters.map((v,i)=>
                 <p key={i}>
-                    { v.data instanceof Array ? <button onClick={async ()=>setPracWithChapter(v.data)}>{v.name}</button>
+                    { v.data instanceof Array ? <Button style={{width:"100vw"}} variant="contained" onClick={async ()=>setPracWithChapter(v.data)}>{v.name}</Button>
                     :<span style={{display:v.name=="course.json"?"none":"inline"}} onClick={async ()=>{
                         if(platform=="web"){
                             const pracfile=await v.entry.getFile();
@@ -163,7 +169,7 @@ export default function Menu(props){
                             props.ChangePrac(v.data);
                             props.ChangePage("home");
                         }
-                    }}>{v.name}</span>
+                    }}>{`${v.name} 进入练习`}</span>
             }  
             </p>
         )}
@@ -174,7 +180,7 @@ export default function Menu(props){
                 pracWithChapter.length!=0 ? pracWithChapter.map(v=><p onClick={()=>{
                     props.ChangePrac(v.data);
                         props.ChangePage("home");
-                }}>{v.name}</p>) : null
+                }}><span style={{color:"grey"}}>({v.name})</span> {v.data.title}</p>) : null
             }
         </div>
 

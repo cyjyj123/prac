@@ -141,7 +141,7 @@ export default function Prac(props){
         }}>检查</button></p>)
     }else if(prac.questions[id].type=="blank"){
         options=(<div>
-            <p>（回答区域请不要使用latex，多个空白处请换行）</p>
+            <p style={{color:"grey"}}>（回答区域请不要使用latex，多个空白处请换行）</p>
             <textarea onChange={(e)=>setBlankUserAns(e.target.value)} style={{width:"90vw",height:"20vh"}}></textarea>
             <button onClick={()=>{
                 const ans=prac.questions[id].answer; // 标准答案，可能是字符串或者字符串数组
@@ -235,6 +235,9 @@ export default function Prac(props){
                         setMchoiceUserAns([]);
                         
                         setId(id+1);
+                    }else{
+                        // 跳转到完成页面
+                        props.ChangePage("finish")
                     }
                 }}>下一题</Button>
             </p>

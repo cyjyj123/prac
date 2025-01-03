@@ -1,8 +1,7 @@
 .vscode/
-prac/android/
-prac/node_modules/
-prac/package-lock.json
-prac/yarn.lock
-prac/build/
-sign/
+android/
+node_modules/
+package-lock.json
+yarn.lock
+build/
 releases/
