@@ -206,9 +206,9 @@ export default function Prac(props){
     return (
         <div>
 
-            <p>第{id+1}题</p>
+            <p style={{color:"grey",marginTop:"2px"}}>第{id+1}题</p>
             <div>
-                <div dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].question,prac.meta)}}></div>
+                <div style={{marginBottom:"5vh"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].question,prac.meta)}}></div>
                 {options}
             </div>
 
@@ -216,7 +216,7 @@ export default function Prac(props){
 
             {explain_button}
 
-            <p>
+            <p style={{marginTop:"5vh"}}>
                 <Button style={{backgroundColor:"#fdedec",width:"47vw",marginRight:"0.5vw"}} onClick={()=>{
                     if(id!=0){
                         setExplainVisible(false);
