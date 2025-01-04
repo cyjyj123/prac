@@ -1,6 +1,11 @@
-.course button{
+.course:nth-child(odd){
+    background: linear-gradient(lightyellow,lightsalmon);
+}
+.course:nth-child(even){
+    background: linear-gradient(lightsalmon,lightyellow);
+}
+.course Button{
     font-size: 1.5em;
     width: 95vw;
     border: 0;
-    background-color: lightsalmon;
 }

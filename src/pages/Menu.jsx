@@ -64,8 +64,8 @@ export default function Menu(props){
             if(platform=="web") {setSelCouId(i) }else{setChapters(v.data);}
         }}>
             <CardContent>
-                <button >{v_real_name}</button>
-                <p>添加时间：{create_time.toLocaleString()}</p>
+                <Button>{v_real_name}</Button>
+                <p style={{color:"grey"}}>添加时间：{create_time.toLocaleString()}</p>
                 {course_json.length!=0 ? <p>{course_json[0].data.introduction}</p>:null}
             </CardContent>
         </Card>
@@ -102,6 +102,7 @@ export default function Menu(props){
         }}>选择文件</Button>
         <p><input style={{display:"none"}} ref={fileChooseRef} type="file" onChange={async (e)=>{
             const file=e.target.files[0];
+            console.log(file.name)
             if(file.name.endsWith(".json")){
                 // 单练习文件直接加载
                 readAndGoto(file,props)
@@ -115,6 +116,12 @@ export default function Menu(props){
 
                 for(let p in zipfile.files){
                     const p_name=zipfile.files[p].name;
+                    console.log("p_name",p_name)
+
+                    if(p_name.endsWith("/")){
+                        continue;
+                    }
+
                     const p_data=JSON.parse(await zipfile.files[p].async("string"));
                     
                     if(!p_name.includes("/")){
@@ -184,8 +191,14 @@ export default function Menu(props){
             }
         </div>
 
-        <div>
-            <p><button onClick={()=>{localStorage.clear();setCourses([])}}>清空存储</button></p>
+        <div style={{marginTop:"5vh"}}>
+            <p><button onClick={()=>{
+                const okq=window.confirm("Are you sure clear the storage?");
+                if(okq){
+                    localStorage.clear();
+                    setCourses([])
+                }
+            }}>清空存储</button></p>
         </div>
     </div>)
 }
