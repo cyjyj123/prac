@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Button } from "@material-ui/core";
+import { Button, Chip} from "@material-ui/core";
 import { translate } from "../utils/translate";
+import { Board } from "./Board";
+import { Divider } from "@mui/material";
+import { styled } from "@mui/material";
 
 export default function Home(props){
     const prac=props.prac;
@@ -24,7 +27,8 @@ export default function Home(props){
     if(prac.title!=undefined){
         basic_info=(<div style={{marginTop:"5vh"}}>
             <h3 style={{color:"orange"}}>{prac.title}</h3>
-            <p style={{color:"grey"}}>{prac.course!=undefined ? `${translate("course")}${translate("sign_colon")}${prac.course}` : "其它课程"} {prac.chapter!=undefined ? `章节：${prac.chapter}` : "未分类章节"}</p>
+            <Chip style={{color:"grey"}} label={prac.course!=undefined ? `${translate("course")}${translate("sign_colon")}${prac.course}` : "其它课程"} />
+            <p style={{color:"grey"}}>{prac.chapter!=undefined ? `章节：${prac.chapter}` : "未分类章节"}</p>
             <p style={{color:"grey"}}>{translate("authors")}{translate("sign_colon")}{authors}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{translate("licenses")}{translate("sign_colon")}{licenses}</p>
             <p style={{margin:"5vh 0"}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{prac.description}</p>
         </div>)
@@ -37,7 +41,11 @@ export default function Home(props){
         
         <p><Button variant="contained" style={{backgroundColor:"lightskyblue",width:"95vw"}} onClick={
             ()=>{
+                if(props.prac.title!=undefined){
                     props.ChangePage("prac")
+                }else{
+                    props.ChangePage("menu")
+                }
             }
         }>{translate("sp")}</Button></p>
     </div>)

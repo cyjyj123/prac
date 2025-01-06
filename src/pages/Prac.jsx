@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./prac.css"
-import { Button } from "@material-ui/core";
+import { Button,Chip, Dialog, DialogContent, DialogTitle } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert"
 import { parseMeta } from "../utils/parseMeta";
 
@@ -35,6 +35,8 @@ export default function Prac(props){
     const [mchoiceUserAns,setMchoiceUserAns]=useState([]);
 
     const [optionsSort,setOptionsSort]=useState([]); // 乱序顺序，每个元素为一个数组，代表该题的从第一个选项开始的对应源文件中选项的顺序
+
+    const [kn_dialog,setKnDialog]=useState(-1);
 
     let options=null;
     if(prac.questions[id].type=="choice"){
@@ -192,13 +194,29 @@ export default function Prac(props){
         result_feed=<Alert severity="error">回答错误</Alert>
     }else{}
 
+    const show_knows=prac.questions[id].knows==undefined ? null :
+        <div style={{textAlign:"left"}}>
+            {
+                prac.questions[id].knows.map((kn,kn_key)=>
+                    <Chip style={{margin:"2px",padding:"0 2px"}} label={prac.knows[kn].title} key={kn_key} onClick={()=>{
+                        setKnDialog(kn);
+                    }} />
+                )
+            }
+        </div>
+
     let explain_button=null;
     if(sheet[id]!="Unanswer" || prac.questions[id].type=="answer" || prac.questions[id].type=="solution"){
     explain_button=(<div>
         <p><Button variant="contained" style={{width:"95vw"}} onClick={()=>explainVisible==false ? setExplainVisible(true) : setExplainVisible(false)}>查看解析</Button></p>
         {
-        explainVisible==true ? <div dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].explain,prac.meta)}}>
-        </div> : null
+        explainVisible==true ? 
+            <div>
+                {prac.questions[id].knows!=undefined ? show_knows : null}
+                <div dangerouslySetInnerHTML={{__html:prac.questions[id].explain!=undefined ? parseMeta(prac.questions[id].explain,prac.meta):`<p>暂无解析</p>`}}>
+                </div>
+            </div>
+            : null
         }
         </div>)
     }
@@ -208,7 +226,7 @@ export default function Prac(props){
 
             <p style={{color:"grey",marginTop:"2px"}}>第{id+1}题</p>
             <div>
-                <div style={{marginBottom:"5vh"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].question,prac.meta)}}></div>
+                <div style={{marginBottom:"5vh"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].title ?? prac.questions[id].question,prac.meta)}}></div>
                 {options}
             </div>
 
@@ -242,6 +260,21 @@ export default function Prac(props){
                 }}>下一题</Button>
             </p>
 
+            <Dialog open={kn_dialog!=-1?true:false} onClose={()=>{setKnDialog(-1)}}>
+                <DialogTitle>
+                    <p>知识点：{kn_dialog!=-1 ? prac.knows[kn_dialog].title :null}</p>
+                </DialogTitle>
+                <DialogContent>
+                    {
+                        kn_dialog!=-1 ?
+                        prac.knows[kn_dialog].content.map((dlg_v,dlg_v_key)=>
+                        <div key={dlg_v_key} dangerouslySetInnerHTML={{__html:parseMeta(dlg_v,prac.meta)}}>
+
+                        </div>)
+                        : null
+                    }
+                </DialogContent>
+            </Dialog>
                 
         </div>
     )
