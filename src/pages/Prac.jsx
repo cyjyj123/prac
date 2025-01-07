@@ -3,6 +3,7 @@ import "./prac.css"
 import { Button,Chip, Dialog, DialogContent, DialogTitle } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert"
 import { parseMeta } from "../utils/parseMeta";
+import Tips from "./Tips";
 
 function showResult(result,id,sheet,setSheetFunc){
     if(result=="Correct"){
@@ -231,6 +232,8 @@ export default function Prac(props){
             </div>
 
             {result_feed}
+
+            {prac.questions[id].tips!=undefined ? <Tips tips={prac.questions[id].tips} /> : null}
 
             {explain_button}
 
