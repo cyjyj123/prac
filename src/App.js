@@ -5,19 +5,29 @@ import "mathjax/es5/tex-svg-full"
 import { useRef, useState } from 'react';
 import Home from './pages/Home';
 import Prac from './pages/Prac';
-import { AppBar, Toolbar,BottomNavigation,BottomNavigationAction, Box, Button} from '@material-ui/core';
+import { AppBar, Toolbar,BottomNavigation,BottomNavigationAction, Box, Button, Dialog, DialogContent} from '@material-ui/core';
 import About from './pages/About';
 import Menu from "./pages/Menu"
 import Knows from './pages/Knows';
 import jsQR from "jsqr"
 import { translate } from './utils/translate';
 import Finish from './pages/Finish';
+import { Maker } from './pages/Maker';
+
+import HomeIcon from "@mui/icons-material/Home"
+import MenuIcon from "@mui/icons-material/List"
+import AboutIcon from "@mui/icons-material/Settings"
+
+import BoardIcon from "@mui/icons-material/FilterFrames"
+import { Board } from './pages/Board';
 
 function App() {
   const [page,setPage]=useState("home");
   const [prac,setPrac]=useState({});
   const scanVideoRef=useRef(null);
   const scanCanvasRef=useRef(null)
+
+  const [board,setBoard]=useState(false)
 
   //const [code,setCode]=use
 
@@ -35,12 +45,19 @@ function App() {
     middle=<Knows prac={prac} />
   }else if(page=="finish"){
     middle=<Finish ChangePage={(page_name)=>setPage(page_name)} prac={prac} />
+  }else if(page=="maker"){
+    middle=<Maker />
   }else{}
 
   return (
     <div className="App">
       <div style={{display:"flex",justifyContent:"center",padding:0,background:"#48c9b0",boxShadow:"1px 1px grey",height:"5vh"}}>
         <p style={{padding:0,margin:0,color:"white"}}>
+            <span style={{color:"lightgrey",padding:"1px"}}>
+              <BoardIcon onClick={e=>{
+                setBoard(true)
+              }} />
+            </span>
             <span style={{padding:0,margin:0}}>{prac.title!=undefined ? `练习 - ${prac.title}` : translate("title")}</span>
             {page=="home" ? <Button onClick={async ()=>{
               const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
@@ -117,10 +134,16 @@ function App() {
       
 
         <BottomNavigation showLabels value={page} onChange={(e,nv)=>setPage(nv)} style={{position:"fixed",left:"0",bottom:"0",width:"100vw",borderTop:"1px solid grey"}}>
-          <BottomNavigationAction label={translate("menu_home")} value="home" />
-          <BottomNavigationAction label={translate("menu_menu")} value="menu" />
-          <BottomNavigationAction label={translate("menu_about")} value="about" />
+          <BottomNavigationAction label={translate("menu_home")} value="home" icon={<HomeIcon  />} />
+          <BottomNavigationAction label={translate("menu_menu")} value="menu" icon={<MenuIcon />} />
+          <BottomNavigationAction label={translate("menu_about")} value="about" icon={<AboutIcon />} />
         </BottomNavigation>
+        
+        <Dialog open={board} onClose={()=>{setBoard(false)}} fullScreen={true}>
+          <DialogContent>
+            <Board Close={()=>setBoard(false)} />
+          </DialogContent>
+        </Dialog>
     </div>
   );
 }

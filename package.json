@@ -1,13 +1,17 @@
 {
   "name": "prac",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "private": true,
   "dependencies": {
     "@capacitor/android": "^5.7.3",
     "@capacitor/cli": "^5.7.3",
     "@capacitor/core": "^5.7.3",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/icons-material": "^6.3.1",
+    "@mui/material": "^6.3.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -24,8 +28,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "debug": "npm run build & cap sync & cap run android",
-    "bar": "npm run build & cap sync & cap build android"
+    "debug": "npm run build && cap sync && cap run android",
+    "bar": "npm run build && cap sync && cap build android"
   },
   "eslintConfig": {
     "extends": [

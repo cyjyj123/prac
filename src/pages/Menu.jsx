@@ -1,7 +1,7 @@
 import { useEffect, useState,useRef } from "react";
 import JSZip from "jszip"
 import "./menu.css"
-import {Button, Card, CardContent, CardHeader} from "@material-ui/core"
+import {Button, ButtonGroup, Card, CardContent, CardHeader} from "@material-ui/core"
 
 function readAndGoto(file,props){
     const fr=new FileReader();
@@ -100,6 +100,18 @@ export default function Menu(props){
         <Button style={{backgroundColor:"lightskyblue",color:"white",fontSize:"32px",width:"80vw"}} onClick={()=>{
             fileChooseRef.current.click();
         }}>选择文件</Button>
+        <ButtonGroup variant="text" style={{marginTop:"2vh"}}>
+            <Button style={{padding:"0 10vw"}} onClick={async ()=>{
+                const prac_json_url=window.prompt().trim();
+                if(prac_json_url!=""){
+                    const url_fetch=await fetch(prac_json_url);
+                    const url_json=await url_fetch.json();
+                    props.ChangePrac(url_json);
+                    props.ChangePage("home");
+                }
+            }}>从网址导入</Button>
+            <Button style={{padding:"0 10vw"}} onClick={()=>{props.ChangePage("maker")}}>制作题目</Button>
+        </ButtonGroup>
         <p><input style={{display:"none"}} ref={fileChooseRef} type="file" onChange={async (e)=>{
             const file=e.target.files[0];
             console.log(file.name)

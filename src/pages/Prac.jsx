@@ -1,8 +1,11 @@
 import { useState } from "react";
 import "./prac.css"
-import { Button } from "@material-ui/core";
+import { Avatar, Button,Chip, Dialog, DialogContent, DialogTitle,Drawer } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert"
 import { parseMeta } from "../utils/parseMeta";
+import Tips from "./Tips";
+import GridIcon from "@mui/icons-material/GridOn"
+import Grid from "@mui/material/Grid2";
 
 function showResult(result,id,sheet,setSheetFunc){
     if(result=="Correct"){
@@ -35,6 +38,10 @@ export default function Prac(props){
     const [mchoiceUserAns,setMchoiceUserAns]=useState([]);
 
     const [optionsSort,setOptionsSort]=useState([]); // 乱序顺序，每个元素为一个数组，代表该题的从第一个选项开始的对应源文件中选项的顺序
+
+    const [kn_dialog,setKnDialog]=useState(-1);
+
+    const [all_sheet,setAllSheet]=useState(false);
 
     let options=null;
     if(prac.questions[id].type=="choice"){
@@ -192,13 +199,29 @@ export default function Prac(props){
         result_feed=<Alert severity="error">回答错误</Alert>
     }else{}
 
+    const show_knows=prac.questions[id].knows==undefined ? null :
+        <div style={{textAlign:"left"}}>
+            {
+                prac.questions[id].knows.map((kn,kn_key)=>
+                    <Chip style={{margin:"2px",padding:"0 2px"}} label={prac.knows[kn].title} key={kn_key} onClick={()=>{
+                        setKnDialog(kn);
+                    }} />
+                )
+            }
+        </div>
+
     let explain_button=null;
     if(sheet[id]!="Unanswer" || prac.questions[id].type=="answer" || prac.questions[id].type=="solution"){
     explain_button=(<div>
         <p><Button variant="contained" style={{width:"95vw"}} onClick={()=>explainVisible==false ? setExplainVisible(true) : setExplainVisible(false)}>查看解析</Button></p>
         {
-        explainVisible==true ? <div dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].explain,prac.meta)}}>
-        </div> : null
+        explainVisible==true ? 
+            <div>
+                {prac.questions[id].knows!=undefined ? show_knows : null}
+                <div dangerouslySetInnerHTML={{__html:prac.questions[id].explain!=undefined ? parseMeta(prac.questions[id].explain,prac.meta):`<p>暂无解析</p>`}}>
+                </div>
+            </div>
+            : null
         }
         </div>)
     }
@@ -208,16 +231,18 @@ export default function Prac(props){
 
             <p style={{color:"grey",marginTop:"2px"}}>第{id+1}题</p>
             <div>
-                <div style={{marginBottom:"5vh"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].question,prac.meta)}}></div>
+                <div style={{marginBottom:"5vh"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].title ?? prac.questions[id].question,prac.meta)}}></div>
                 {options}
             </div>
 
             {result_feed}
 
+            {prac.questions[id].tips!=undefined ? <Tips tips={prac.questions[id].tips} /> : null}
+
             {explain_button}
 
             <p style={{marginTop:"5vh"}}>
-                <Button style={{backgroundColor:"#fdedec",width:"47vw",marginRight:"0.5vw"}} onClick={()=>{
+                <Button style={{backgroundColor:"#fdedec",width:"46vw",marginRight:"0.5vw"}} onClick={()=>{
                     if(id!=0){
                         setExplainVisible(false);
                         
@@ -227,7 +252,8 @@ export default function Prac(props){
                         setId(id-1);
                     }
                 }}>上一题</Button>
-                <Button style={{backgroundColor:"lightskyblue",width:"47vw",marginLeft:"0.5vw"}} onClick={()=>{
+                <GridIcon onClick={()=>{setAllSheet(true)}} />
+                <Button style={{backgroundColor:"lightskyblue",width:"46vw",marginLeft:"0.5vw"}} onClick={()=>{
                     if(id!=MAX-1){
                         setExplainVisible(false);
 
@@ -242,7 +268,41 @@ export default function Prac(props){
                 }}>下一题</Button>
             </p>
 
-                
+            <Dialog open={kn_dialog!=-1?true:false} onClose={()=>{setKnDialog(-1)}}>
+                <DialogTitle>
+                    <p>知识点：{kn_dialog!=-1 ? prac.knows[kn_dialog].title :null}</p>
+                </DialogTitle>
+                <DialogContent>
+                    {
+                        kn_dialog!=-1 ?
+                        prac.knows[kn_dialog].content.map((dlg_v,dlg_v_key)=>
+                        <div key={dlg_v_key} dangerouslySetInnerHTML={{__html:parseMeta(dlg_v,prac.meta)}}>
+
+                        </div>)
+                        : null
+                    }
+                </DialogContent>
+            </Dialog>
+            <Drawer open={all_sheet} onClose={()=>{setAllSheet(false)}} anchor={'bottom'}>
+                    <Grid container spacing={2}>
+                    {
+                        sheet.map((q,q_key)=>
+                            <Grid key={q_key} size={2} style={{padding:"2px"}}>
+                                <Avatar style={{backgroundColor:q=="Correct" ? "green" : (q=="Error" ? "red" : "grey")}} onClick={()=>{
+                                    setExplainVisible(false);
+
+                                    setBlankUserAns("");
+                                    setMchoiceUserAns([]);
+                                    
+                                    setId(q_key);
+
+                                    setAllSheet(false);
+                                }}>{q_key+1}</Avatar>
+                            </Grid>
+                        )
+                    }
+                    </Grid>
+            </Drawer>
         </div>
     )
 }

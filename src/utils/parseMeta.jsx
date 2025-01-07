@@ -51,7 +51,7 @@ export function parseMeta(str,meta){
 
         // 根据其类型进行替换
         if(m_type=="image"){
-            str=str.replace(m,`<img src=${m_content} />`);
+            str=str.replace(m,`<img src=${m_content} style="width:98vw;object-fit:contain" />`);
         }else{
             // 其它类型，直接替换
             str=str.replace(m,m_content)
