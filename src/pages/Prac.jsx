@@ -1,9 +1,11 @@
 import { useState } from "react";
 import "./prac.css"
-import { Button,Chip, Dialog, DialogContent, DialogTitle } from "@material-ui/core";
+import { Avatar, Button,Chip, Dialog, DialogContent, DialogTitle,Drawer } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert"
 import { parseMeta } from "../utils/parseMeta";
 import Tips from "./Tips";
+import GridIcon from "@mui/icons-material/GridOn"
+import Grid from "@mui/material/Grid2";
 
 function showResult(result,id,sheet,setSheetFunc){
     if(result=="Correct"){
@@ -38,6 +40,8 @@ export default function Prac(props){
     const [optionsSort,setOptionsSort]=useState([]); // 乱序顺序，每个元素为一个数组，代表该题的从第一个选项开始的对应源文件中选项的顺序
 
     const [kn_dialog,setKnDialog]=useState(-1);
+
+    const [all_sheet,setAllSheet]=useState(false);
 
     let options=null;
     if(prac.questions[id].type=="choice"){
@@ -238,7 +242,7 @@ export default function Prac(props){
             {explain_button}
 
             <p style={{marginTop:"5vh"}}>
-                <Button style={{backgroundColor:"#fdedec",width:"47vw",marginRight:"0.5vw"}} onClick={()=>{
+                <Button style={{backgroundColor:"#fdedec",width:"46vw",marginRight:"0.5vw"}} onClick={()=>{
                     if(id!=0){
                         setExplainVisible(false);
                         
@@ -248,7 +252,8 @@ export default function Prac(props){
                         setId(id-1);
                     }
                 }}>上一题</Button>
-                <Button style={{backgroundColor:"lightskyblue",width:"47vw",marginLeft:"0.5vw"}} onClick={()=>{
+                <GridIcon onClick={()=>{setAllSheet(true)}} />
+                <Button style={{backgroundColor:"lightskyblue",width:"46vw",marginLeft:"0.5vw"}} onClick={()=>{
                     if(id!=MAX-1){
                         setExplainVisible(false);
 
@@ -278,7 +283,26 @@ export default function Prac(props){
                     }
                 </DialogContent>
             </Dialog>
-                
+            <Drawer open={all_sheet} onClose={()=>{setAllSheet(false)}} anchor={'bottom'}>
+                    <Grid container spacing={2}>
+                    {
+                        sheet.map((q,q_key)=>
+                            <Grid key={q_key} size={2} style={{padding:"2px"}}>
+                                <Avatar style={{backgroundColor:q=="Correct" ? "green" : (q=="Error" ? "red" : "grey")}} onClick={()=>{
+                                    setExplainVisible(false);
+
+                                    setBlankUserAns("");
+                                    setMchoiceUserAns([]);
+                                    
+                                    setId(q_key);
+
+                                    setAllSheet(false);
+                                }}>{q_key+1}</Avatar>
+                            </Grid>
+                        )
+                    }
+                    </Grid>
+            </Drawer>
         </div>
     )
 }

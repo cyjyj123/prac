@@ -1,9 +1,12 @@
 import { TextField,Button, MenuItem ,Select} from "@material-ui/core";
-import { useState } from "react";
+import { useRef, useState } from "react";
+
 export function Maker(props){
     let _out={title:"",chapter:"",description:"",questions:[],meta:{}};
     const [out,setOut]=useState(_out)
     let [nowedit,setNowEdit]=useState(-1);
+
+    const downbut=useRef(null);
 
     const [edit_type,setEditType]=useState("choice");
     const [edit_title,setEditTitle]=useState("");
@@ -80,7 +83,7 @@ export function Maker(props){
                 }else if(edit_type=="mchoice"){
                     now.answer=edit_answers.sort((a,b)=>a-b);
                 }else if(edit_type=="blank"){
-                    now.answer=edit_blank;
+                    now.answer=edit_blank.split("\n");
                 }else{}
 
                 out.questions[nowedit]=now;
@@ -93,14 +96,22 @@ export function Maker(props){
     const basic_info=
             <div>
                 <p style={{color:"grey"}}>基本信息</p>
-                <TextField style={{width:"80vw"}} label="练习标题" value={out.title} onChange={e=>{
-                    setOut({...out,title:e.target.value})
-                }} />
-                <TextField label="所属课程" />
-                <TextField label="章节" />
-                <TextField label="作者" />
-                <TextField label="许可协议" />
-                <TextField label="简介" multiline minRows={2} style={{width:"80vw"}} />
+                    <p>
+                        <TextField style={{width:"80vw"}} label="练习标题" value={out.title} onChange={e=>{
+                            setOut({...out,title:e.target.value})
+                        }} />
+                    </p>
+                    <p>
+                        <TextField label="所属课程" />
+                        <TextField label="章节" />
+                    </p>
+                    
+                    
+                    <p size={6}>
+                        <TextField label="作者" />
+                        <TextField label="许可协议" />
+                    </p>
+                    <p><TextField label="简介" multiline minRows={5} style={{width:"80vw"}} /></p>
             </div>
 
     return (
@@ -131,9 +142,21 @@ export function Maker(props){
                 }
 
                 console.log("输出",out)
+
+                const out_file=new Blob([JSON.stringify(out)],{type:"text/plain"});
+                const out_fr=new FileReader();
+                out_fr.readAsDataURL(out_file);
+                out_fr.onloadend=(out_fr_evt)=>{
+                    if(downbut.current!=null){
+                        downbut.current.href=out_fr_evt.target.result;
+                        downbut.current.download=`${out.title}.json`
+                        downbut.current.click();
+                    }
+                }
             }}>Save</Button>
         </p>
             {nowedit!=-1 ? question_edit:basic_info}
+        <p><a ref={downbut}></a></p>
         </div>
     )
 }
