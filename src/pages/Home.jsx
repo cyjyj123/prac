@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Checkbox, Chip, FormControlLabel} from "@material-ui/core";
+import { Button,ButtonGroup, Checkbox, Chip, FormControlLabel} from "@material-ui/core";
 import { translate } from "../utils/translate";
 import { Board } from "./Board";
 import { Divider } from "@mui/material";
@@ -68,8 +68,15 @@ export default function Home(props){
             <span>{prac.version!=undefined ? `版本：${prac.version}` : null }</span>
             <span>{prac.lang!=undefined ? `语言：${prac.lang}` : null }</span>
         </p>
-        <p>{navigator.canShare!=undefined && navigator.canShare({text:JSON.stringify(props.prac)}) ? <Button onClick={()=>{
+        <ButtonGroup variant="text">
+        {
+            props.prac.contact !=undefined ?
+            <Button style={{padding:"0 5vw"}}><a href={props.prac.contact} style={{color:"black",textDecoration:"none"}}>联系方式</a></Button>
+            : null
+        }
+        {navigator.canShare!=undefined && navigator.canShare({text:JSON.stringify(props.prac)}) ? <Button style={{padding:"0 5vw"}} onClick={()=>{
             navigator.share({text:JSON.stringify(prac)})
-        }}>分享</Button> : null}</p>
+        }}>分享</Button> : null}
+        </ButtonGroup>
     </div>)
 }
