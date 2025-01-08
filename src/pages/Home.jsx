@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Chip} from "@material-ui/core";
+import { Button, Checkbox, Chip, FormControlLabel} from "@material-ui/core";
 import { translate } from "../utils/translate";
 import { Board } from "./Board";
 import { Divider } from "@mui/material";
@@ -7,6 +7,8 @@ import { styled } from "@mui/material";
 
 export default function Home(props){
     const prac=props.prac;
+
+    const [pcfg,setPcfg]=useState({q_center:false,order_random:false});
     
     let basic_info=<p>{translate("bi_tips")}</p>;
     let authors=null;
@@ -38,15 +40,36 @@ export default function Home(props){
     <div>        
         <p style={{color:"grey"}}>{translate("bi")}</p>
         {basic_info}
-        
+
+        <FormControlLabel style={{color:"grey"}} control={
+            <Checkbox  checked={pcfg.q_center} onChange={e=>{
+                setPcfg({...pcfg,q_center:e.target.checked})
+            }} />
+        } label="题目居中" />
+        <FormControlLabel style={{color:"grey"}} label="单选题选项乱序"
+            control={
+                <Checkbox checked={pcfg.order_random} onChange={e=>{
+                    setPcfg({...pcfg,order_random:e.target.checked})
+                }} />   
+            }
+        />
+
         <p><Button variant="contained" style={{backgroundColor:"lightskyblue",width:"95vw"}} onClick={
             ()=>{
                 if(props.prac.title!=undefined){
+                    props.ChangePracConfig(pcfg)
                     props.ChangePage("prac")
                 }else{
                     props.ChangePage("menu")
                 }
             }
         }>{translate("sp")}</Button></p>
+        <p>
+            <span>{prac.version!=undefined ? `版本：${prac.version}` : null }</span>
+            <span>{prac.lang!=undefined ? `语言：${prac.lang}` : null }</span>
+        </p>
+        <p>{navigator.canShare!=undefined && navigator.canShare({text:JSON.stringify(props.prac)}) ? <Button onClick={()=>{
+            navigator.share({text:JSON.stringify(prac)})
+        }}>分享</Button> : null}</p>
     </div>)
 }
