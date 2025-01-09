@@ -8,7 +8,7 @@ import { styled } from "@mui/material";
 export default function Home(props){
     const prac=props.prac;
 
-    const [pcfg,setPcfg]=useState({q_center:false,order_random:false});
+    const [pcfg,setPcfg]=useState({q_center:false,order_random:false,qid_center:false});
     
     let basic_info=<p>{translate("bi_tips")}</p>;
     let authors=null;
@@ -41,11 +41,19 @@ export default function Home(props){
         <p style={{color:"grey"}}>{translate("bi")}</p>
         {basic_info}
 
+        <p>
+        <FormControlLabel style={{color:"grey"}} control={
+            <Checkbox  checked={pcfg.qid_center} onChange={e=>{
+                setPcfg({...pcfg,qid_center:e.target.checked})
+            }} />
+        } label="题号居中" />
         <FormControlLabel style={{color:"grey"}} control={
             <Checkbox  checked={pcfg.q_center} onChange={e=>{
                 setPcfg({...pcfg,q_center:e.target.checked})
             }} />
         } label="题目居中" />
+        </p>
+        <p>
         <FormControlLabel style={{color:"grey"}} label="单选题选项乱序"
             control={
                 <Checkbox checked={pcfg.order_random} onChange={e=>{
@@ -53,6 +61,7 @@ export default function Home(props){
                 }} />   
             }
         />
+        </p>
 
         <p><Button variant="contained" style={{backgroundColor:"lightskyblue",width:"95vw"}} onClick={
             ()=>{
@@ -65,8 +74,9 @@ export default function Home(props){
             }
         }>{translate("sp")}</Button></p>
         <p>
-            <span>{prac.version!=undefined ? `版本：${prac.version}` : null }</span>
-            <span>{prac.lang!=undefined ? `语言：${prac.lang}` : null }</span>
+            <span style={{color:"grey"}}>{prac.version!=undefined ? `版本：${prac.version}` : null }</span>
+            &nbsp;
+            <span style={{color:"grey"}}>{prac.lang!=undefined ? `语言：${prac.lang}` : null }</span>
         </p>
         <ButtonGroup variant="text">
         {
