@@ -76,9 +76,9 @@ export function Board(props){
     }
 
     return (
-        <div>
-            <p>黑板</p>
+        <div style={{position:"absolute",top:0,left:0}}>
             <p>
+                <span>黑板</span>
                 <Button variant="outlined" color="primary" onClick={()=>props.Close()}>关闭</Button>
                 <Button
                 onClick={e=>{
@@ -87,13 +87,16 @@ export function Board(props){
                         const canvas_r=canvas.current.getBoundingClientRect();
                         const canvas_ctx=canvas.current.getContext("2d");
 
+                        canvas_ctx.beginPath();
                         canvas_ctx.clearRect(0,0,canvas_r.width,canvas_r.height)
                     }
                 }}
                 >清空画布</Button>
             </p>
-            <canvas style={{background:"grey"}} ref={canvas} onPointerDown={e=>{
+            <canvas width={window.innerWidth} height={window.innerHeight} style={{background:"grey",padding:0,margin:0,overflow:"hidden"}} ref={canvas} onPointerDown={e=>{
                 const ctx=e.target.getContext("2d")
+                ctx.strokeStyle="white";
+                window.ctx=ctx
                 p_start(ctx,e.clientX,e.clientY);                
             }}
             onPointerMove={e=>{

@@ -70,7 +70,10 @@ export default function Prac(props){
                 afterrand.push(i);
             }
 
-            afterrand.sort((a,b)=>Math.random()-0.5);
+            if(props.PracConfig.order_random){
+                // 设置乱序时乱序，否则不乱序
+                afterrand.sort((a,b)=>Math.random()-0.5);
+            }
             
             options=[];
             for(let i=0;i<afterrand.length;i++){
@@ -229,9 +232,9 @@ export default function Prac(props){
     return (
         <div>
 
-            <p style={{color:"grey",marginTop:"2px"}}>第{id+1}题</p>
+            <p style={{color:"grey",marginTop:"2px",textAlign:props.PracConfig.qid_center?"center":"left",paddingLeft:props.PracConfig.qid_center?0:"5px",paddingTop:"2px"}}>第{id+1}题</p>
             <div>
-                <div style={{marginBottom:"5vh"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].title ?? prac.questions[id].question,prac.meta)}}></div>
+                <div style={{marginBottom:"5vh",padding:"5px",textAlign:props.PracConfig.q_center==true?"center":"left"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].title ?? prac.questions[id].question,prac.meta)}}></div>
                 {options}
             </div>
 
@@ -252,7 +255,7 @@ export default function Prac(props){
                         setId(id-1);
                     }
                 }}>上一题</Button>
-                <GridIcon onClick={()=>{setAllSheet(true)}} />
+                <GridIcon onClick={()=>{setAllSheet(true)}} style={{color:"grey"}} />
                 <Button style={{backgroundColor:"lightskyblue",width:"46vw",marginLeft:"0.5vw"}} onClick={()=>{
                     if(id!=MAX-1){
                         setExplainVisible(false);

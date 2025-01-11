@@ -29,14 +29,17 @@ function App() {
 
   const [board,setBoard]=useState(false)
 
-  //const [code,setCode]=use
+  const [prac_config,setPracConfig]=useState({q_center:false})
+  const [scan_open,setScanOpen]=useState(false);
+
+
 
 
   let middle="";
   if(page=="home"){
-    middle=<Home ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} />    
+    middle=<Home ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} PracConfig={prac_config} ChangePracConfig={s=>{setPracConfig(s)}} />    
   }else if(page=="prac"){
-    middle=<Prac ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} />
+    middle=<Prac ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} PracConfig={prac_config} />
   }else if(page=="menu"){
     middle=<Menu ChangePage={(page_name)=>{setPage(page_name)}} ChangePrac={v=>setPrac(v)} />
   }else if(page=="about"){
@@ -60,6 +63,7 @@ function App() {
             </span>
             <span style={{padding:0,margin:0}}>{prac.title!=undefined ? `练习 - ${prac.title}` : translate("title")}</span>
             {page=="home" ? <Button onClick={async ()=>{
+              setScanOpen(true)
               const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
               scanCanvasRef.current.style.display="block";
               scanVideoRef.current.srcObject=s;
@@ -95,6 +99,7 @@ function App() {
                         const scanUrlResult=await fetch(code.data,{method:"GET"});
                         //alert(await scanUrlResult.text())
                         setPrac(await scanUrlResult.json())
+                        setScanOpen(false);
                       }catch(e){
                         alert(e)
                       }
@@ -102,6 +107,7 @@ function App() {
                       // 当作JSON字符串处理解析
                       try{
                         setPrac(JSON.parse(code.data));
+                        setScanOpen(false);
                       }catch(e){
                         alert("JSON解析错误")
                       }
@@ -120,11 +126,12 @@ function App() {
 
       <div style={{overflow:"scroll"}}>
         {middle}
-        
+        {scan_open ?
         <div>
           <video id="scan_v" ref={scanVideoRef} style={{display:"none",width:"300px",height:"300px"}}></video>
           <canvas id="scan_i" ref={scanCanvasRef} style={{width:"300px",height:"300px"}}></canvas>
         </div>
+        :null}
 
         {prac.knows!=undefined && prac.knows.length!=0 && page=="home" ? <p style={{color:"blue"}} onClick={()=>setPage("knows")}>查看知识点</p> : null}
         {page=="knows" ? <p style={{color:"blue"}} onClick={()=>setPage("home")}>返回首页</p> :null}

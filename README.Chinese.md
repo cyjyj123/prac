@@ -3,16 +3,12 @@
 
 # 重要
 从v0.0.5版本开始，原仓库拆分为另一个仓库，本仓库为原仓库的prac子目录，原先的另外内容放入prac-others仓库
+在打包为Android APK时，需要声明CAMERA权限。
 
 # 开发缘由
 第一，许多软件不能自定义练习题；
 第二，许多软件的各种数学、格式等不够美观；
 第三，本软件完全开放源代码。
-
-# 目录结构
-本软件主要使用React开发，其代码位于`prac`子目录，App版使用`capcitor`，其位于`app`子目录中，静态资源使用`prac\build`。
-
-关于练习文件的格式请参阅`format.md`和`examples`目录中的样例。
 
 # 许可协议
 GPL
@@ -20,27 +16,23 @@ GPL
 # 开发思路
 本软件主要以Web和基于WebView的APP为目标平台，在本软件中，主要分为单次练习和课程。
 其中，课程由若干个单次练习组成，每次可进行一个单次练习的练习。
-单次练习可以进行临时练习，也可以存储在本地进行重复地练习。
 
 # 开发调试
-主要内容均位于`prac`子目录中
+WebApp
 ```
-cd prac
+yarn start
 ```
-调式web
+Android
 ```
-npm start
-```
-调试Android版
-```
-npm build
+yarn build
 npx cap sync
 npx cap run android
 ```
 或者
 ```
-npm run debug
+yarn debug
 ```
 
 # 备注
 当前版本的一些功能还有待完善。
+暂时请不要使用discuss字段。
