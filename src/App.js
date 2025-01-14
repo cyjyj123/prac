@@ -122,6 +122,34 @@ function App() {
               }
               //alert(stream)
             }}>{translate("scan")}</Button> : null}
+            { page=="home" && window.NDEFReader!=undefined
+              ? 
+              <Button onClick={async ()=>{
+                const nr=new window.NDEFReader();
+                try{
+                  const progress=await nr.scan();
+                  nr.onreading=async event=>{
+                    const tdecoder=new TextDecoder();
+                    const url_array=new Uint8Array(event.message.records[0].data.buffer);
+                    const url=tdecoder.decode(url_array).trim();
+                    const canok=window.confirm(`读取内容为${url}，是否继续？`);
+                    if(canok && (url.startsWith("http://") || url.startsWith("https://"))){
+                      // 获取网址内容后解析
+                      try{
+                        
+                        const scanUrlResult=await fetch(url,{method:"GET"});
+                        setPrac(await scanUrlResult.json())
+                      }catch(e){
+                        alert(e)
+                      }
+                    }
+                  }
+                }catch(e){
+                  alert("读取失败，原因："+e);
+                }
+              }}>NFC</Button>
+              : null
+            }
         </p>
       </div>
 
