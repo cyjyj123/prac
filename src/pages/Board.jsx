@@ -1,8 +1,10 @@
-import { Button } from "@material-ui/core";
-import { useRef,useEffect } from "react"
+import { Button, ButtonGroup } from "@material-ui/core";
+import { useRef,useEffect, useState } from "react"
 
 export function Board(props){
     const canvas=useRef(null);
+    const [boardColor,setBoardColor]=useState("#006650")
+    const [penColor,setPenColor]=useState("#ffffff")
 
     let start=false
 
@@ -14,48 +16,6 @@ export function Board(props){
             return {x:0,y:0}
         }
     }
-
-    /*useEffect(()=>{
-        const ctx=canvas!=null ? canvas.current.getContext("2d"):null;
-        const convert_pos=(x,y)=>{
-            if(canvas.current!=null){
-            const canvas_rect=canvas.current.getBoundingClientRect();
-            return {x:x-canvas_rect.left,y:y-canvas_rect.top};
-            }else{
-                return {x:0,y:0}
-            }
-        }
-    
-        document.addEventListener("pointerdown",(e)=>{
-            e.preventDefault();
-            document.body.style.overflow="hidden"
-            start=true;
-            //lastpoint={x:e.clientX,y:e.clientY};
-
-            if(start){
-                const new_pos=convert_pos(e.clientX,e.clientY);
-                ctx.moveTo(new_pos.x,new_pos.y);
-            }
-           // ctx.fillRect(0,0,300,300)
-        });
-
-        document.addEventListener("pointermove",(e)=>{
-            e.preventDefault()
-           
-            if(start){
-                const new_pos=convert_pos(e.clientX,e.clientY)
-                ctx.lineTo(new_pos.x,new_pos.y);
-                ctx.stroke();
-            }
-        });
-
-        document.addEventListener("pointerup",(e)=>{
-            e.preventDefault()
-            //document.body.style.overflow="scroll"
-            
-            start=false;
-        });
-    },[]);*/
 
     const p_start=(ctx,x,y)=>{
         start=true
@@ -78,8 +38,8 @@ export function Board(props){
     return (
         <div style={{position:"absolute",top:0,left:0}}>
             <p>
-                <span>黑板</span>
-                <Button variant="outlined" color="primary" onClick={()=>props.Close()}>关闭</Button>
+                <ButtonGroup variant="text">
+                <Button onClick={()=>props.Close()}>关闭黑板</Button>
                 <Button
                 onClick={e=>{
 
@@ -92,11 +52,19 @@ export function Board(props){
                     }
                 }}
                 >清空画布</Button>
+                </ButtonGroup>
+                <span>黑板颜色 <input type="color" value={boardColor} onChange={e=>{setBoardColor(e.target.value)}} /></span>
+                <span>画笔颜色 <input type="color" value={penColor} onChange={e=>{setPenColor(e.target.value)}} /></span>
+                <Button onClick={e=>{
+                    const bcolor=parseInt(boardColor.replace("#","0x"));
+                    setPenColor("#"+(0xffffff-bcolor).toString(16));
+                }}>计算画笔颜色</Button>
             </p>
-            <canvas width={window.innerWidth} height={window.innerHeight} style={{background:"grey",padding:0,margin:0,overflow:"hidden"}} ref={canvas} onPointerDown={e=>{
+            <canvas width={window.innerWidth} height={window.innerHeight} style={{background:boardColor,padding:0,margin:0,overflow:"hidden"}} ref={canvas} onPointerDown={e=>{
                 const ctx=e.target.getContext("2d")
                 ctx.strokeStyle="white";
                 window.ctx=ctx
+                ctx.strokeStyle=penColor;
                 p_start(ctx,e.clientX,e.clientY);                
             }}
             onPointerMove={e=>{

@@ -70,7 +70,12 @@ export function ConvertCSV(csvtxt,explain=true){
             // 视为元数据
             meta[line[0]]={}
             meta[line[0]].type=line[1];
-            meta[line[0]].content=line[2];
+
+            if(line[1]=="table"){
+                meta[line[0]].content=JSON.parse(line[2]);
+            }else{
+                meta[line[0]].content=line[2];
+            }
         }
 
         questions.push(question)

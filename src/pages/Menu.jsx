@@ -122,6 +122,24 @@ export default function Menu(props){
                 }
             }}>从网址导入</Button>
             <Button style={{padding:"0 10vw"}} onClick={()=>{props.ChangePage("maker")}}>制作题目</Button>
+            {
+                window.NDEFReader!=undefined 
+                ? <Button onClick={async()=>{
+                    const nr=new window.NDEFReader();
+                    try{
+                        const url=prompt("请输入URL");
+                        if(url!=undefined && url.trim()!=""){
+                            await nr.write(url.trim());
+                            alert("写入成功");
+                        }else{
+                            alert("URL为空，未写入")
+                        }
+                    }catch(e){
+                        alert("写入失败，原因："+e);
+                    }
+                }}>向NFC标签写入</Button> 
+                : null
+            }
         </ButtonGroup>
         <p><input style={{display:"none"}} ref={fileChooseRef} type="file" onChange={async (e)=>{
             const file=e.target.files[0];
