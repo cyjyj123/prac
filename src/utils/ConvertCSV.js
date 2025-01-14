@@ -1,4 +1,4 @@
-export function ConvertCSV(csvtxt){
+export function ConvertCSV(csvtxt,explain=true){
     // 传入CSV格式字符串，并返回JSON
     const lines=csvtxt.split("\n");
     const result={}; 
@@ -9,10 +9,14 @@ export function ConvertCSV(csvtxt){
     if(n[1]!=undefined){
         // 课程
         result.course=n[1];
+    }else{
+        result.course="";
     }
     if(n[2]!=undefined){
         // 章节
         result.chapter=n[2];
+    }else{
+        result.chapter="";
     }
     if(n[3]!=undefined){
         // 作者
@@ -25,6 +29,8 @@ export function ConvertCSV(csvtxt){
     if(n[5]!=undefined){
         // 简介
         result.description=n[5];
+    }else{
+        result.description="";
     }
 
     // 
@@ -45,21 +51,21 @@ export function ConvertCSV(csvtxt){
             question.type="choice";
             question.title=line[1];
             question.answer=parseOptionId(line[2]);
-            question.explain=line[3];
-            question.options=line.filter((opt,i)=>i>3);
+            question.explain=explain?line[3]:"";
+            question.options=line.filter((opt,i)=>i>(explain?3:2));
         }else if(line[0]=="1" || line[0]=="mchoice" || line[0]=="多选"){
             // 多选
             question.type="mchoice";
             question.title=line[1];
             question.answer=line[2].split(";").map(opt=>parseOptionId(opt)).sort((a,b)=>a-b);
-            question.explain=line[3];
-            question.options=line.filter((opt,i)=>i>3);
+            question.explain=explain?line[3]:"";
+            question.options=line.filter((opt,i)=>i>(explain?3:2));
         }else if(line[0]=="2" || line[0]=="blank" || line[0]=="填空"){
             // 客观填空
             question.type="blank";
             question.title=line[1];
             question.answer=line[2].split(";")
-            question.explain=line[3];
+            question.explain=explain?line[3]:"";
         }else{
             // 视为元数据
             meta[line[0]]={}

@@ -1,6 +1,6 @@
 {
   "name": "prac",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "dependencies": {
     "@capacitor/android": "^5.7.3",
