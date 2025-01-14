@@ -50,7 +50,7 @@ export function parseMeta(str,meta){
         const m_content=m_meta.content;
 
         // 根据其类型进行替换
-        if(m_type=="image"){
+        if(m_type=="image" || m_type=="image/png" || m_type=="image/jpeg"){
             str=str.replace(m,`<img src=${m_content} style="width:98vw;object-fit:contain" />`);
         }else if(m_type=="table"){
             // 表格类型，一个数组，每个元素为一个数组，代表一行

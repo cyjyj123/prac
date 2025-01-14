@@ -1,3 +1,5 @@
+import { Config } from "./Config";
+
 // 格式：key：{语言标志：文字内容}
 const dict={
     "title":{
@@ -55,11 +57,15 @@ const dict={
     sign_colon:{
         "en":":",
         "zh":"："
+    },
+    sets_lang:{
+        "en":"Languag",
+        "zh":"Language 语言"
     }
 }
 
 export function translate(key){
-    const lang=navigator.language.split("-")[0];
+    const lang=Config.lang;
     const ret=dict[key];
 
     if(ret!=undefined && ret[lang]!=undefined){

@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import "mathjax/es5/tex-svg-full"
 //import "mathjax/es5/tex-chtml-full"
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Home from './pages/Home';
 import Prac from './pages/Prac';
 import { AppBar, Toolbar,BottomNavigation,BottomNavigationAction, Box, Button, Dialog, DialogContent} from '@material-ui/core';
@@ -20,6 +20,7 @@ import AboutIcon from "@mui/icons-material/Settings"
 
 import BoardIcon from "@mui/icons-material/FilterFrames"
 import { Board } from './pages/Board';
+import { Config } from './utils/Config';
 
 function App() {
   const [page,setPage]=useState("home");
@@ -32,7 +33,9 @@ function App() {
   const [prac_config,setPracConfig]=useState({q_center:false})
   const [scan_open,setScanOpen]=useState(false);
 
-
+  //useEffect(()=>{
+    Config.load()
+  //},[])
 
 
   let middle="";

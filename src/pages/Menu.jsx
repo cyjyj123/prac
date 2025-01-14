@@ -2,14 +2,25 @@ import { useEffect, useState,useRef } from "react";
 import JSZip from "jszip"
 import "./menu.css"
 import {Button, ButtonGroup, Card, CardContent, CardHeader} from "@material-ui/core"
+import { ConvertCSV } from "../utils/ConvertCSV";
 
 function readAndGoto(file,props){
     const fr=new FileReader();
     fr.readAsText(file);
     fr.onloadend=()=>{
-        const prac=JSON.parse(fr.result);
-        props.ChangePrac(prac);
-        props.ChangePage("home");
+        let prac=undefined;
+        if(file.name.endsWith(".json")){
+            prac=JSON.parse(fr.result);
+        }else if(file.name.endsWith(".csv")){
+            const explain=window.confirm("您选择的是CSV文件，请问是否含有解析字段？");
+            prac=ConvertCSV(fr.result,explain)
+            console.log(prac)
+        }else{}
+
+        if(prac!=undefined){
+            props.ChangePrac(prac);
+            props.ChangePage("home");
+        }
     }
 }
 
@@ -115,7 +126,7 @@ export default function Menu(props){
         <p><input style={{display:"none"}} ref={fileChooseRef} type="file" onChange={async (e)=>{
             const file=e.target.files[0];
             console.log(file.name)
-            if(file.name.endsWith(".json")){
+            if(file.name.endsWith(".json") || file.name.endsWith(".csv")){
                 // 单练习文件直接加载
                 readAndGoto(file,props)
             }else if(file.name.endsWith(".zip")){
