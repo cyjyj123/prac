@@ -12,7 +12,8 @@ function readAndGoto(file,props){
         if(file.name.endsWith(".json")){
             prac=JSON.parse(fr.result);
         }else if(file.name.endsWith(".csv")){
-            prac=ConvertCSV(fr.result)
+            const explain=window.confirm("您选择的是CSV文件，请问是否含有解析字段？");
+            prac=ConvertCSV(fr.result,explain)
             console.log(prac)
         }else{}
 
