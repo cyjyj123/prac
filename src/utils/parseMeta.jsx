@@ -52,6 +52,8 @@ export function parseMeta(str,meta){
         // 根据其类型进行替换
         if(m_type=="image" || m_type=="image/png" || m_type=="image/jpeg"){
             str=str.replace(m,`<img src=${m_content} style="width:98vw;object-fit:contain" />`);
+        }else if(m_type=="audio"){
+            str=str.replace(m,`<audio controls src=${m_content}></audio>`)
         }else if(m_type=="table"){
             // 表格类型，一个数组，每个元素为一个数组，代表一行
             let m_real=`<table border="1" style="margin-top:2vh;width:90vw;text-align:center;border-collapse:collapse">`;
@@ -59,7 +61,7 @@ export function parseMeta(str,meta){
             for(let row in m_content){
                 m_real+=`<tr>`;
                 for(let col in m_content[row]){
-                    m_real+=`<td>${m_content[row][col]}</td>`;
+                    m_real+=`<td>${parseMeta(m_content[row][col],meta)}</td>`;
                 }
                 m_real+=`</tr>`;
             }

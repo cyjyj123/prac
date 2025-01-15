@@ -3,7 +3,8 @@
 
 # 重要
 从v0.0.5版本开始，原仓库拆分为另一个仓库，本仓库为原仓库的prac子目录，原先的另外内容放入prac-others仓库
-在打包为Android APK时，需要声明CAMERA权限。
+在打包为Android APK时，需要声明CAMERA和NFC权限。
+从v0.2.5版本开始完善目录中的在指定目录存储课程的相关功能，该版本尚未完全完成此功能；由于历史原因，此功能放在MenuFs.jsx中。
 
 # 开发缘由
 第一，许多软件不能自定义练习题；
@@ -21,6 +22,7 @@ GPL
 WebApp
 ```
 yarn start
+HTTPS=true yarn start // 在HTTPS模式下调试
 ```
 Android
 ```

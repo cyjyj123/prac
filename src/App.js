@@ -30,8 +30,9 @@ function App() {
 
   const [board,setBoard]=useState(false)
 
-  const [prac_config,setPracConfig]=useState({q_center:false})
+  const [prac_config,setPracConfig]=useState({q_center:false,imm_mode:false})
   const [scan_open,setScanOpen]=useState(false);
+  //const [immMode,setImmMode]=useState(false);
 
   //useEffect(()=>{
     Config.load()
@@ -42,7 +43,7 @@ function App() {
   if(page=="home"){
     middle=<Home ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} PracConfig={prac_config} ChangePracConfig={s=>{setPracConfig(s)}} />    
   }else if(page=="prac"){
-    middle=<Prac ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} PracConfig={prac_config} />
+    middle=<Prac ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} PracConfig={prac_config} ChangePracConfig={s=>{setPracConfig(s)}} />
   }else if(page=="menu"){
     middle=<Menu ChangePage={(page_name)=>{setPage(page_name)}} ChangePrac={v=>setPrac(v)} />
   }else if(page=="about"){
@@ -57,7 +58,7 @@ function App() {
 
   return (
     <div className="App">
-      <div style={{display:"flex",justifyContent:"center",padding:0,background:"#48c9b0",boxShadow:"1px 1px grey",height:"5vh"}}>
+      <div style={{display:prac_config.imm_mode?"none":"flex",justifyContent:"center",padding:0,background:"#48c9b0",boxShadow:"1px 1px grey",height:"5vh"}}>
         <p style={{padding:0,margin:0,color:"white"}}>
             <span style={{color:"lightgrey",padding:"1px"}}>
               <BoardIcon onClick={e=>{
@@ -171,11 +172,13 @@ function App() {
       </div>
       
 
-        <BottomNavigation showLabels value={page} onChange={(e,nv)=>setPage(nv)} style={{position:"fixed",left:"0",bottom:"0",width:"100vw",borderTop:"1px solid grey"}}>
+          {prac_config.imm_mode? null :
+        <BottomNavigation  showLabels value={page} onChange={(e,nv)=>setPage(nv)} style={{position:"fixed",left:"0",bottom:"0",width:"100vw",borderTop:"1px solid grey"}}>
           <BottomNavigationAction label={translate("menu_home")} value="home" icon={<HomeIcon  />} />
           <BottomNavigationAction label={translate("menu_menu")} value="menu" icon={<MenuIcon />} />
           <BottomNavigationAction label={translate("menu_about")} value="about" icon={<AboutIcon />} />
         </BottomNavigation>
+}
         
         <Dialog open={board} onClose={()=>{setBoard(false)}} fullScreen={true}>
           <DialogContent>
