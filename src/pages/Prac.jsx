@@ -232,7 +232,12 @@ export default function Prac(props){
     return (
         <div>
 
-            <p style={{color:"grey",marginTop:"2px",textAlign:props.PracConfig.qid_center?"center":"left",paddingLeft:props.PracConfig.qid_center?0:"5px",paddingTop:"2px"}}>第{id+1}题</p>
+            <p style={{color:"grey",marginTop:"2px",textAlign:props.PracConfig.qid_center?"center":"left",paddingLeft:props.PracConfig.qid_center?0:"5px",paddingTop:"2px"}} onClick={()=>{
+                if(props.PracConfig.imm_mode){
+                    props.ChangePracConfig({...props.PracConfig,imm_mode:false});
+                    props.ChangePage("home");
+                }
+            }}>第{id+1}题</p>
             <div>
                 <div style={{marginBottom:"5vh",padding:"5px",textAlign:props.PracConfig.q_center==true?"center":"left"}} dangerouslySetInnerHTML={{__html:parseMeta(prac.questions[id].title ?? prac.questions[id].question,prac.meta)}}></div>
                 {options}

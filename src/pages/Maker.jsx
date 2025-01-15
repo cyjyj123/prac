@@ -17,6 +17,10 @@ export function Maker(props){
 
     const [edit_explain,setEditExplain]=useState("")
 
+    const [meta_name,setMetaName]=useState("");
+    const [meta_type,setMetaType]=useState("");
+    const [meta_content,setMetaContent]=useState("");
+
     const show_opts= <div>
     <div>
         <p>选项 请点击选择正确答案</p>
@@ -113,6 +117,28 @@ export function Maker(props){
                     </p>
                     <p><TextField label="简介" multiline minRows={5} style={{width:"80vw"}} /></p>
             </div>
+    
+    const middle_meta=(
+        <div>
+            <p>添加嵌入的数据</p>
+            <p><TextField label="名称" value={meta_name} onChange={e=>{setMetaName(e.target.value)}} /></p>
+            <p><input type="file" onChange={e=>{
+                const file=e.target.files[0];
+                const fr=new FileReader();
+                fr.readAsDataURL(file);
+                fr.onloadend=()=>{
+                    console.log(fr.result)
+                }
+            }} /></p>
+        </div>
+    )
+
+    let middle=null;
+    if(nowedit==-1 ){
+        middle=basic_info;
+    }else if(nowedit==-2){
+        middle=middle_meta;
+    }else{middle=question_edit;}
 
     return (
         <div>
@@ -135,6 +161,7 @@ export function Maker(props){
                 setEditBlank("")
                 setEditExplain("")
             }}>New Question</Button>
+            <Button onClick={()=>{setNowEdit(-2)}}>添加数据</Button>
             <Button onClick={()=>{
                 if(out.title.trim()==""){
                     alert("标题不能为空")
@@ -155,7 +182,7 @@ export function Maker(props){
                 }
             }}>Save</Button>
         </p>
-            {nowedit!=-1 ? question_edit:basic_info}
+            {middle}
         <p><a ref={downbut}></a></p>
         </div>
     )

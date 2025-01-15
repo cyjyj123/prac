@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Button,ButtonGroup, Checkbox, Chip, FormControlLabel} from "@material-ui/core";
 import { translate } from "../utils/translate";
-import { Board } from "./Board";
-import { Divider } from "@mui/material";
-import { styled } from "@mui/material";
 
 export default function Home(props){
     const prac=props.prac;
@@ -59,6 +56,13 @@ export default function Home(props){
                 <Checkbox checked={pcfg.order_random} onChange={e=>{
                     setPcfg({...pcfg,order_random:e.target.checked})
                 }} />   
+            }
+        />
+        <FormControlLabel style={{color:"grey"}} label="沉浸式模式" 
+            control={
+                <Checkbox checked={pcfg.imm_mode} onChange={e=>
+                    setPcfg({...pcfg,imm_mode:e.target.checked})
+                } />
             }
         />
         </p>

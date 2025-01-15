@@ -1,10 +1,13 @@
-import { Button, ButtonGroup } from "@material-ui/core";
+import { Button, ButtonGroup, TextField} from "@material-ui/core";
+import { CheckBox } from "@mui/icons-material";
 import { useRef,useEffect, useState } from "react"
 
 export function Board(props){
     const canvas=useRef(null);
     const [boardColor,setBoardColor]=useState("#006650")
     const [penColor,setPenColor]=useState("#ffffff")
+    const [rubber,setRubber]=useState(false);
+    const [rubberSize,setRubberSize]=useState("5");
 
     let start=false
 
@@ -26,8 +29,13 @@ export function Board(props){
     const p_move=(ctx,x,y)=>{
         const newpos=convert_pos(x,y)
         if(start){
-            ctx.lineTo(newpos.x,newpos.y)
-            ctx.stroke()
+            if(rubber){
+                const rubberSizeInt=parseInt(rubberSize);
+                ctx.clearRect(newpos.x,newpos.y,rubberSizeInt,rubberSizeInt)
+            }else{
+                ctx.lineTo(newpos.x,newpos.y)
+                ctx.stroke()
+            }
         }
     }
 
@@ -59,6 +67,16 @@ export function Board(props){
                     const bcolor=parseInt(boardColor.replace("#","0x"));
                     setPenColor("#"+(0xffffff-bcolor).toString(16));
                 }}>计算画笔颜色</Button>
+                <Button onClick={()=>{setRubber(false)}} color={rubber?"default":"primary"}>粉笔</Button>
+                <Button onClick={e=>{
+                    const canvas_ctx=canvas.current.getContext("2d");
+
+                    canvas_ctx.beginPath();
+                    setRubber(true)
+                }} color={rubber?"primary":"default"}>黑板擦</Button>
+                <TextField style={{width:"10vw"}} value={rubberSize} type="number" onChange={e=>{
+                        setRubberSize(e.target.value)
+                }} />
             </p>
             <canvas width={window.innerWidth} height={window.innerHeight} style={{background:boardColor,padding:0,margin:0,overflow:"hidden"}} ref={canvas} onPointerDown={e=>{
                 const ctx=e.target.getContext("2d")
