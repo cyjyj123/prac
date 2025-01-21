@@ -13,6 +13,7 @@ import jsQR from "jsqr"
 import { translate } from './utils/translate';
 import Finish from './pages/Finish';
 import { Maker } from './pages/Maker';
+import { urlGet } from './utils/url';
 
 import HomeIcon from "@mui/icons-material/Home"
 import MenuIcon from "@mui/icons-material/List"
@@ -100,9 +101,10 @@ function App() {
                       // 获取网址内容后解析
                       try{
                         
-                        const scanUrlResult=await fetch(code.data,{method:"GET"});
+                        //const scanUrlResult=await fetch(code.data,{method:"GET"});
                         //alert(await scanUrlResult.text())
-                        setPrac(await scanUrlResult.json())
+                        //setPrac(await scanUrlResult.json())
+                        await urlGet(code.data,setPrac);
                         setScanOpen(false);
                       }catch(e){
                         alert(e)
@@ -138,8 +140,9 @@ function App() {
                       // 获取网址内容后解析
                       try{
                         
-                        const scanUrlResult=await fetch(url,{method:"GET"});
-                        setPrac(await scanUrlResult.json())
+                        //const scanUrlResult=await fetch(url,{method:"GET"});
+                        //setPrac(await scanUrlResult.json())
+                        await urlGet(url,setPrac);
                       }catch(e){
                         alert(e)
                       }

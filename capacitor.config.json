@@ -3,6 +3,12 @@
   "appName": "prac",
   "webDir": "build",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "cleartext":true
+  },
+  "plugins":{
+    "CapacitorHttp": {
+      "enabled": true
+    }
   }
 }
