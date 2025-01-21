@@ -3,14 +3,34 @@ import JSZip from "jszip"
 import "./menu.css"
 import {Button, ButtonGroup, Card, CardContent, CardHeader} from "@material-ui/core"
 import { ConvertCSV } from "../utils/ConvertCSV";
+import { CapacitorHttp } from "@capacitor/core";
+import { urlGet } from "../utils/url";
 
-function readAndGoto(file,props){
+function readAndGoto(file,props,file2=null){
+    // 选择多个文件时，还有file2，否则file2为null
     const fr=new FileReader();
-    fr.readAsText(file);
+    const files=[file,file2];
+    // 阅读主文件
+    const mainfile=files.filter(f=>f!=null && !f.name.endsWith(".meta.json") && (f.name.endsWith(".json") || f.name.endsWith(".csv")))[0];
+    console.log(mainfile)
+    fr.readAsText(mainfile);
     fr.onloadend=()=>{
         let prac=undefined;
         if(file.name.endsWith(".json")){
-            prac=JSON.parse(fr.result);
+            if(file2==null){
+                // 只有一个JSON文件，直接解析
+                prac=JSON.parse(fr.result);
+            }else{
+                // 有两个JSON文件，合并后解析
+                prac=JSON.parse(fr.result);
+                const fr2=new FileReader();
+                fr2.readAsText(files.filter(f=>f!=mainfile)[0]);
+                fr2.onloadend=()=>{
+                    const other_meta=JSON.parse(fr2.result);
+                    const sum_meta={...prac.meta,...other_meta.meta};
+                    prac.meta=sum_meta;
+                }
+            }
         }else if(file.name.endsWith(".csv")){
             const explain=window.confirm("您选择的是CSV文件，请问是否含有解析字段？");
             prac=ConvertCSV(fr.result,explain)
@@ -115,10 +135,7 @@ export default function Menu(props){
             <Button style={{padding:"0 10vw"}} onClick={async ()=>{
                 const prac_json_url=window.prompt().trim();
                 if(prac_json_url!=""){
-                    const url_fetch=await fetch(prac_json_url);
-                    const url_json=await url_fetch.json();
-                    props.ChangePrac(url_json);
-                    props.ChangePage("home");
+                    urlGet(prac_json_url,props.ChangePrac,props.ChangePage)
                 }
             }}>从网址导入</Button>
             <Button style={{padding:"0 10vw"}} onClick={()=>{props.ChangePage("maker")}}>制作题目</Button>
@@ -141,12 +158,12 @@ export default function Menu(props){
                 : null
             }
         </ButtonGroup>
-        <p><input style={{display:"none"}} ref={fileChooseRef} type="file" onChange={async (e)=>{
+        <p><input style={{display:"none"}} ref={fileChooseRef} type="file" multiple onChange={async (e)=>{
             const file=e.target.files[0];
             console.log(file.name)
             if(file.name.endsWith(".json") || file.name.endsWith(".csv")){
                 // 单练习文件直接加载
-                readAndGoto(file,props)
+                readAndGoto(file,props,e.target.files.length>1?e.target.files[1]:null)
             }else if(file.name.endsWith(".zip")){
                 // 单个课程多练习文件，解压，存储，不跳转
                 const zip=new JSZip();

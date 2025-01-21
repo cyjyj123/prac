@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button,ButtonGroup, Checkbox, Chip, FormControlLabel} from "@material-ui/core";
 import { translate } from "../utils/translate";
 
@@ -29,7 +29,7 @@ export default function Home(props){
             <Chip style={{color:"grey"}} label={prac.course!=undefined ? `${translate("course")}${translate("sign_colon")}${prac.course}` : "其它课程"} />
             <p style={{color:"grey"}}>{prac.chapter!=undefined ? `章节：${prac.chapter}` : "未分类章节"}</p>
             <p style={{color:"grey"}}>{translate("authors")}{translate("sign_colon")}{authors}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{translate("licenses")}{translate("sign_colon")}{licenses}</p>
-            <p style={{margin:"5vh 0"}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{prac.description}</p>
+            <p style={{margin:"5vh 0"}}>{prac.description}</p>
         </div>)
     }
 
