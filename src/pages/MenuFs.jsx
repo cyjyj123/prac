@@ -39,6 +39,7 @@ export default function MenuFs(props){
 
     useEffect(()=>{
         (async()=>{
+            try{
             const fs=await get("fs");
             if(fs!=undefined){
                 courses_root=await fs.getDirectoryHandle("courses");
@@ -46,6 +47,8 @@ export default function MenuFs(props){
 
                 setList(await getCourses(courses_root));
             }
+        }catch(e){
+        }
         })()
     },[])
 
