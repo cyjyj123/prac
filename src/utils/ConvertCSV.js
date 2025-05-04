@@ -118,3 +118,41 @@ function parseOptionId(opt){
         return opt.codePointAt(0)-65;
     }
 }
+
+export function readAndGoto(file,props,file2=null){
+    // 选择多个文件时，还有file2，否则file2为null
+    const fr=new FileReader();
+    const files=[file,file2];
+    // 阅读主文件
+    const mainfile=files.filter(f=>f!=null && !f.name.endsWith(".meta.json") && (f.name.endsWith(".json") || f.name.endsWith(".csv")))[0];
+    console.log(mainfile)
+    fr.readAsText(mainfile);
+    fr.onloadend=()=>{
+        let prac=undefined;
+        if(file.name.endsWith(".json")){
+            if(file2==null){
+                // 只有一个JSON文件，直接解析
+                prac=JSON.parse(fr.result);
+            }else{
+                // 有两个JSON文件，合并后解析
+                prac=JSON.parse(fr.result);
+                const fr2=new FileReader();
+                fr2.readAsText(files.filter(f=>f!=mainfile)[0]);
+                fr2.onloadend=()=>{
+                    const other_meta=JSON.parse(fr2.result);
+                    const sum_meta={...prac.meta,...other_meta.meta};
+                    prac.meta=sum_meta;
+                }
+            }
+        }else if(file.name.endsWith(".csv")){
+            const explain=window.confirm("您选择的是CSV文件，请问是否含有解析字段？");
+            prac=ConvertCSV(fr.result,explain)
+            console.log(prac)
+        }else{}
+
+        if(prac!=undefined){
+            props.ChangePrac(prac);
+            props.ChangePage("home");
+        }
+    }
+}

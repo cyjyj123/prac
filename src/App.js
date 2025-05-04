@@ -7,7 +7,6 @@ import Home from './pages/Home';
 import Prac from './pages/Prac';
 import { AppBar, Toolbar,BottomNavigation,BottomNavigationAction, Box, Button, Dialog, DialogContent} from '@material-ui/core';
 import About from './pages/About';
-import Menu from "./pages/Menu"
 import Knows from './pages/Knows';
 import jsQR from "jsqr"
 import { translate } from './utils/translate';
@@ -22,6 +21,8 @@ import AboutIcon from "@mui/icons-material/Settings"
 import BoardIcon from "@mui/icons-material/FilterFrames"
 import { Board } from './pages/Board';
 import { Config } from './utils/Config';
+import Sub from './pages/Sub';
+import MenuFs from './pages/MenuFs';
 
 function App() {
   const [page,setPage]=useState("home");
@@ -46,7 +47,7 @@ function App() {
   }else if(page=="prac"){
     middle=<Prac ChangePage={(page_name)=>{setPage(page_name)}} prac={prac} PracConfig={prac_config} ChangePracConfig={s=>{setPracConfig(s)}} />
   }else if(page=="menu"){
-    middle=<Menu ChangePage={(page_name)=>{setPage(page_name)}} ChangePrac={v=>setPrac(v)} />
+    middle=<MenuFs ChangePage={(page_name)=>{setPage(page_name)}} ChangePrac={v=>setPrac(v)} />
   }else if(page=="about"){
     middle=<About />
   }else if(page=="knows"){
@@ -55,6 +56,8 @@ function App() {
     middle=<Finish ChangePage={(page_name)=>setPage(page_name)} prac={prac} />
   }else if(page=="maker"){
     middle=<Maker />
+  }else if(page=="sub"){
+    middle=<Sub ChangePage={page_name=>setPage(page_name)} prac={prac} />
   }else{}
 
   return (

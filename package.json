@@ -1,6 +1,6 @@
 {
   "name": "prac",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@capacitor/android": "^5.7.3",
@@ -15,6 +15,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "idb-keyval": "^6.2.1",
     "jsqr": "^1.4.0",
     "jszip": "^3.10.1",
     "mathjax": "^3.2.2",
