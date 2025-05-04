@@ -71,7 +71,12 @@ export default function FileChooser(props){
                         parent_dir=await course_dir.getDirectoryHandle(file_name.split("/")[0],{create:true});
                     }
 
+                    if(file_name.endsWith("/")){
+                        continue;
+                    }
+
                     const file_data=await zipfile.files[key].async("string");
+                    console.log(file_name)
                     const outfile=await parent_dir.getFileHandle(file_name.includes("/")?file_name.split("/")[1]:file_name,{create:true});
                     const outfilew=await outfile.createWritable();
                     await outfilew.write(file_data);
