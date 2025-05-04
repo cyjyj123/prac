@@ -1,4 +1,9 @@
 # 更新日志
+## v1.0.0
+废弃了原Menu.jsx中的目录选择部分，剩余的内容改为了FileChooser.jsx，目录界面更改为MenuFs.jsx，废弃了Local Storage存储
+将readAndGoto函数移到了ConvertCSV.js中
+## v0.3.1
+忘记更新了什么
 ## v0.3.0
 添加了环境变量
 修复了Android中无法从URL导入的问题

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button,ButtonGroup, Checkbox, Chip, FormControlLabel} from "@material-ui/core";
 import { translate } from "../utils/translate";
+import MenuFs from "./MenuFs";
 
 export default function Home(props){
     const prac=props.prac;
@@ -83,14 +84,15 @@ export default function Home(props){
             <span style={{color:"grey"}}>{prac.lang!=undefined ? `语言：${prac.lang}` : null }</span>
         </p>
         <ButtonGroup variant="text">
-        {
-            props.prac.contact !=undefined ?
-            <Button style={{padding:"0 5vw"}}><a href={props.prac.contact} style={{color:"black",textDecoration:"none"}}>联系方式</a></Button>
-            : null
-        }
-        {navigator.canShare!=undefined && navigator.canShare({text:JSON.stringify(props.prac)}) ? <Button style={{padding:"0 5vw"}} onClick={()=>{
-            navigator.share({text:JSON.stringify(prac)})
-        }}>分享</Button> : null}
+            {
+                props.prac.contact !=undefined ?
+                <Button style={{padding:"0 5vw"}}><a href={props.prac.contact} style={{color:"black",textDecoration:"none"}}>联系方式</a></Button>
+                : null
+            }
+            {navigator.canShare!=undefined && navigator.canShare({text:JSON.stringify(props.prac)}) ? <Button style={{padding:"0 5vw"}} onClick={()=>{
+                navigator.share({text:JSON.stringify(prac)})
+            }}>分享</Button> : null}
+            <Button style={{padding:"0 5vw"}} onClick={()=>{props.ChangePage("sub")}}>子题库</Button>
         </ButtonGroup>
     </div>)
 }
