@@ -88,19 +88,26 @@ export default function FileChooser(props){
                     
                 }
 
-                
+                    let writeCount=0;
                     for await (const stream of streams){
-                        stream.file.write(stream.data);
-                       
+                        stream.file.write(stream.data).then(()=>{writeCount++});
                     }
+                    await new Promise((Ok,Err)=>{
+                        const writeTimer=setInterval(()=>{
+                            if(writeCount==streams.length){
+                                clearInterval(writeTimer);
+                                Ok();
+                            }
+                        },200);
+                    })
 
-                    let count=0;
+                    let closeCount=0;
                     for (const stream of streams){
-                        stream.file.close().then(()=>{count++});
+                        stream.file.close().then(()=>{closeCount++});
                     }
 
                     const timer=setInterval(()=>{
-                        if(count==streams.length){
+                        if(closeCount==streams.length){
                             clearInterval(timer);
 
                             setMsg("解压完成")
