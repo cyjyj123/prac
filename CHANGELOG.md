@@ -1,4 +1,9 @@
 # 更新日志
+## v1.0.2
+修复了部分问题
+## v1.0.1
+修复了解压速度的问题
+修复了章节顺序的问题
 ## v1.0.0
 废弃了原Menu.jsx中的目录选择部分，剩余的内容改为了FileChooser.jsx，目录界面更改为MenuFs.jsx，废弃了Local Storage存储
 将readAndGoto函数移到了ConvertCSV.js中

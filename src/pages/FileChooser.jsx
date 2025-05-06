@@ -61,7 +61,7 @@ export default function FileChooser(props){
                 const course_dir=await courses_root.getDirectoryHandle(course_fn,{create:true}); // 创建存储当前课程的目录
                 
                 window.test=zipfile
-
+                let streams=[];
                 for(let key in zipfile.files){
                     const file_name=zipfile.files[key].name;
                     
@@ -76,17 +76,46 @@ export default function FileChooser(props){
                     }
 
                     const file_data=await zipfile.files[key].async("string");
-                    console.log(file_name)
+                    //console.log(file_name)
                     const outfile=await parent_dir.getFileHandle(file_name.includes("/")?file_name.split("/")[1]:file_name,{create:true});
                     const outfilew=await outfile.createWritable();
-                    await outfilew.write(file_data);
-                    await outfilew.close();
+
+                    streams.push({file:outfilew,data:file_data});
+                    /*await outfilew.write(file_data);
+                    await outfilew.close();*/
                     
 
                     
                 }
-                setMsg("解压完成")
-                props.CourseUpdate();
+
+                    let writeCount=0;
+                    for await (const stream of streams){
+                        stream.file.write(stream.data).then(()=>{writeCount++});
+                    }
+                    await new Promise((Ok,Err)=>{
+                        const writeTimer=setInterval(()=>{
+                            if(writeCount==streams.length){
+                                clearInterval(writeTimer);
+                                Ok();
+                            }
+                        },200);
+                    })
+
+                    let closeCount=0;
+                    for (const stream of streams){
+                        stream.file.close().then(()=>{closeCount++});
+                    }
+
+                    const timer=setInterval(()=>{
+                        if(closeCount==streams.length){
+                            clearInterval(timer);
+
+                            setMsg("解压完成")
+                            props.CourseUpdate();
+                        }
+                    },200)
+
+
             }else{
                 alert("暂不支持该文件！")
             }

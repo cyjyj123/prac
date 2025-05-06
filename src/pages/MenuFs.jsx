@@ -27,7 +27,7 @@ async function getCourses(courses_root){
                 break;
             }
         }
-        l.push(course_json==null?{fn:entry[0],title:entry[0]}:{...course_json,fn:entry[0]});
+        l.push(course_json==null?{fn:entry[0],title:entry[0]}:{...course_json,fn:entry[0],title:`${entry[0].split("-")[0]}-${course_json.title}`});
     }
     return l;
 }
@@ -81,11 +81,13 @@ export default function MenuFs(props){
                                         l.push(entry);
                                 }
                                 console.log("cc",l)
-                                setList(l.filter(v=>v[0]!="course.json"));
+                                const f=l.filter(v=>v[0]!="course.json");
+                                f.sort((a,b)=>parseInt(a[0].split("-")[0])-parseInt(b[0].split("-")[0]))
+                                setList(f);
                             }}>
                                 <CardContent>
-                                    <h1>{course.title?.split("-").slice(1).join("-")}</h1>
-                                    <p style={{color:"grey"}}>添加时间：{new Date(parseInt(course.title?.split("-")[0])).toLocaleString()}</p>
+                                    <h1>{course.title.split("-").slice(1).join("-")}</h1>
+                                    <p style={{color:"grey"}}>添加时间：{new Date(parseInt(course.title.split("-")[0])).toLocaleString()}</p>
                                     {course.introduction!=null?<p style={{textAlign:"left",color:"grey"}}>{course.introduction}</p>:null}
                                 </CardContent>
                             </Card>
@@ -112,6 +114,7 @@ export default function MenuFs(props){
                             for await (const entry of p.entries()){
                                 l.push(entry);
                             }
+                            l.sort((a,b)=>parseInt(a[0].split("-")[0])-parseInt(b[0].split("-")[0]));
                             setList(l);
                         }
                     }}>返回</Button></p>
