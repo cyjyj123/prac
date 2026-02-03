@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { Button,ButtonGroup, Checkbox, Chip, FormControlLabel} from "@material-ui/core";
 import { translate } from "../utils/translate";
 import MenuFs from "./MenuFs";
+import Divider from "@mui/material/Divider"
+import { parseMeta } from "../utils/parseMeta";
 
 export default function Home(props){
     const prac=props.prac;
 
     const [pcfg,setPcfg]=useState({q_center:false,order_random:false,qid_center:false});
     
-    let basic_info=<p>{translate("bi_tips")}</p>;
+    let basic_info=<p style={{color:"red"}}>{translate("bi_tips")}</p>;
     let authors=null;
     let licenses=null;
 
@@ -35,10 +37,11 @@ export default function Home(props){
     }
 
     return (
-    <div>        
+    <div>
+        {prac.cover!=undefined ? <div dangerouslySetInnerHTML={{__html:parseMeta(prac.cover,prac.meta)}}></div> : null}        
         <p style={{color:"grey"}}>{translate("bi")}</p>
         {basic_info}
-
+        <Divider>设置</Divider>
         <p>
         <FormControlLabel style={{color:"grey"}} control={
             <Checkbox  checked={pcfg.qid_center} onChange={e=>{

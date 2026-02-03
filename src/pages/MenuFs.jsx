@@ -61,9 +61,13 @@ export default function MenuFs(props){
             }} />
             <p>
                 <Button onClick={async ()=>{
-                    const handle=await window.showDirectoryPicker();
-                    await set("fs",handle);
-                    setCoursesRoot(await handle.getDirectoryHandle("courses",{create:true}));
+                    try{
+                        const handle=await window.showDirectoryPicker({startIn:"downloads"});
+                        await set("fs",handle);
+                        setCoursesRoot(await handle.getDirectoryHandle("courses",{create:true}));
+                    }catch(err){
+                        alert(err)
+                    }
                 }}>选择根目录</Button>
             </p>
             <div>

@@ -8,7 +8,7 @@ export default function Knows(props){
    
     const [status,setStatus]=useState("menu"); // menu或者列表下标分别代表知识点列表和具体知识点内容在数组中的索引
     const knowsList=prac.knows.map((v,i)=>
-        <Card onClick={()=>setStatus(i)} variant="outlined" style={{marginBottom:"2px"}}>
+        <Card onClick={()=>setStatus(i)} variant="outlined" style={{marginBottom:"2px"}} key={i}>
             <CardContent>
                 <h3 style={{textAlign:"left",fontStyle:"italic"}}>{i+1}</h3>
                 <p style={{textAlign:"right"}}>{v.title}</p>

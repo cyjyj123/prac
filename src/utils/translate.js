@@ -16,7 +16,7 @@ const dict={
     },
     "bi_tips":{
         "en":"Please Choose the Practise File from the menu below",
-        "zh":"请先从下方进入目录中，选择练习题"
+        "zh":"请先选择练习题"
     },
     "sp":{
         "en":"Start",

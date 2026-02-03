@@ -152,7 +152,7 @@ export default function Prac(props){
     }else if(prac.questions[id].type=="blank"){
         options=(<div>
             <p style={{color:"grey"}}>（回答区域请不要使用latex，多个空白处请换行）</p>
-            <textarea onChange={(e)=>setBlankUserAns(e.target.value)} style={{width:"90vw",height:"20vh"}}></textarea>
+            <textarea onChange={(e)=>setBlankUserAns(e.target.value)} style={{width:"90vw",height:"20vh"}} value={blankUserAns}></textarea>
             <button onClick={()=>{
                 const ans=prac.questions[id].answer; // 标准答案，可能是字符串或者字符串数组
                 //let before_sheet=sheet;
