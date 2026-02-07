@@ -6,6 +6,7 @@ import { ConvertCSV,readAndGoto } from "../utils/ConvertCSV";
 import { CapacitorHttp } from "@capacitor/core";
 import { urlGet } from "../utils/url";
 import {get} from "idb-keyval";
+import { isMobile } from "../utils/Platform";
 
 export default function FileChooser(props){
     const [msg,setMsg]=useState("");
@@ -53,12 +54,20 @@ export default function FileChooser(props){
             }else if(file.name.endsWith(".zip")){
                 // 单个课程多练习文件，解压，存储，不跳转
                 setMsg("解压中...")
+                try{
                 const zip=new JSZip();
                 const zipfile=await zip.loadAsync(file);
                 
-                const courses_root=await (await get("fs")).getDirectoryHandle("courses",{create:true}); // 存储课程的根目录
+                let courses_root=null;
+                if(!isMobile()){
+                    courses_root=await (await get("fs")).getDirectoryHandle("courses",{create:true}); // 存储课程的根目录
+                }else{
+                    courses_root=await (await navigator.storage.getDirectory()).getDirectoryHandle("courses",{create:true})
+                }
+                //alert(await courses_root.requestPermission({mode:"readwrite"}))
                 const course_fn=Date.now().toString()+"-"+file.name.replace(".zip",""); // 课程目录名
                 const course_dir=await courses_root.getDirectoryHandle(course_fn,{create:true}); // 创建存储当前课程的目录
+                //alert(await course_dir.requestPermission({mode:"readwrite"}))
                 
                 window.test=zipfile
                 let streams=[];
@@ -78,9 +87,12 @@ export default function FileChooser(props){
                     const file_data=await zipfile.files[key].async("string");
                     //console.log(file_name)
                     const outfile=await parent_dir.getFileHandle(file_name.includes("/")?file_name.split("/")[1]:file_name,{create:true});
-                    const outfilew=await outfile.createWritable();
-
-                    streams.push({file:outfilew,data:file_data});
+                    //await outfile.requestPermission({mode:"readwrite"})
+                    if((await outfile.requestPermission({mode:"readwrite"}))==="granted"){
+                        const outfilew=await outfile.createWritable({mode:"siloed"});
+                        streams.push({file:outfilew,data:file_data});
+                    }
+                    
                     /*await outfilew.write(file_data);
                     await outfilew.close();*/
                     
@@ -90,6 +102,7 @@ export default function FileChooser(props){
 
                     let writeCount=0;
                     for await (const stream of streams){
+                        //stream.file.requestPermission({mode:"readwrite"})
                         stream.file.write(stream.data).then(()=>{writeCount++});
                     }
                     await new Promise((Ok,Err)=>{
@@ -114,6 +127,9 @@ export default function FileChooser(props){
                             props.CourseUpdate();
                         }
                     },200)
+                }catch(err){
+                    alert(err)
+                }
 
 
             }else{
