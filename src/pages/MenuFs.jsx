@@ -3,16 +3,19 @@ import {get,set} from "idb-keyval";
 import { Button, CardContent,Card } from "@material-ui/core";
 import { ConvertCSV,readAndGoto } from "../utils/ConvertCSV";
 import FileChooser from "./FileChooser";
+import { isMobile } from "../utils/Platform";
 
 async function getCourses(courses_root){
     let l=[];
     for await (const entry of courses_root.entries()){
         let course_json=null;
+        //alert(entry[1].name)
         if(entry[1].name.startsWith(".")){
             continue;
         }
+
         for await (const filename of entry[1].keys()){
-            if(filename=="course.json"){
+            if(filename=="course.json" && entry[1].getFileHandle){
                 const f=await entry[1].getFileHandle("course.json");
                 const file=await f.getFile();
                 
@@ -27,8 +30,10 @@ async function getCourses(courses_root){
                 break;
             }
         }
+
         l.push(course_json==null?{fn:entry[0],title:entry[0]}:{...course_json,fn:entry[0],title:`${entry[0].split("-")[0]}-${course_json.title}`});
     }
+    //alert(`GetCourses: ${l[0].title}`)
     return l;
 }
 
@@ -36,11 +41,18 @@ export default function MenuFs(props){
     let [courses_root,setCoursesRoot]=useState(null);
     const [list,setList]=useState([]);
     const [path,setPath]=useState(["/"]);
+    const [volume,setVolume]=useState(null);
 
     useEffect(()=>{
         (async()=>{
             try{
-            const fs=await get("fs");
+            let fs;
+            if(!isMobile()){
+                fs=await get("fs");
+            }else{
+                setVolume(await navigator.storage.estimate())
+                fs=await navigator.storage.getDirectory()
+            }
             if(fs!=undefined){
                 courses_root=await fs.getDirectoryHandle("courses");
                 setCoursesRoot(courses_root);
@@ -48,6 +60,7 @@ export default function MenuFs(props){
                 setList(await getCourses(courses_root));
             }
         }catch(e){
+            //alert(e)
         }
         })()
     },[])
@@ -59,17 +72,21 @@ export default function MenuFs(props){
             <FileChooser ChangePage={(page_name)=>{props.ChangePage(page_name)}} ChangePrac={v=>props.ChangePrac(v)} CourseUpdate={async ()=>{
                 setList([...await getCourses(courses_root)]);
             }} />
-            <p>
+            {!isMobile()?<p>
                 <Button onClick={async ()=>{
                     try{
-                        const handle=await window.showDirectoryPicker({startIn:"downloads"});
+                        const handle=await window.showDirectoryPicker();
+                        //alert(handle)
                         await set("fs",handle);
-                        setCoursesRoot(await handle.getDirectoryHandle("courses",{create:true}));
+                        //setCoursesRoot(await handle.getDirectoryHandle("courses",{create:true}));
+                        const csr=await handle.getDirectoryHandle("courses",{create:true});
+                        setCoursesRoot(csr);
+                        setList(await getCourses(csr));
                     }catch(err){
-                        alert(err)
+                        //alert(err)
                     }
                 }}>选择根目录</Button>
-            </p>
+            </p>:<p>剩余容量大约：{volume!=null?`${((volume.quota-volume.usage)/1024/1024/1024).toFixed(2)}GB`:""}</p>}
             <div>
             {path.length==1?
                 
